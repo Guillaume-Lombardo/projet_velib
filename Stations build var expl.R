@@ -59,7 +59,7 @@ rm(nstations200)
 #################################################################
 
 #Fonction voisindist(dist)
-#argument : rayon 'dist' autour des stations  dans lequel on regarde
+#argument : rayon 'dist' autour des stations  dans lequel on regarde (en m)
 #sortie : une liste de vecteurs de numéro de stations (numéros dans l'ordre de la matrice station)
 # (pour la station i, listedist[[i]] est un vecteur des stations proches de la station de la ième ligne de la matrice stations)
 #la matrice station est considérée comme une variable globale
@@ -68,7 +68,7 @@ voisindist <- function(dist)
   listedist<-vector('list', nrow(stations))
   for (i in 1:nrow(stations))
   {
-    listedist[[i]]<-which(distGeo(stations[i,13:14], stations[-i,13:14] )<(dist*1000))
+    listedist[[i]]<-which(distGeo(stations[i,13:14], stations[-i,13:14] )<(dist))
   }
   return(listedist)
 }
@@ -95,3 +95,68 @@ voisinnum <- function(n)
 
 
 
+# bike_stands proches
+#######################
+
+# Enrichissement de stations avec le nombre de bike_stands dans un rayon de x m
+# (+ ou - notion de densité de bike_stand)
+# Essai avec 3 variables 200m, 500m, et 1000m
+
+liste<-voisindist(200)
+stations$nbstand200<-0
+for (i in (1:nrow(stations)))
+{
+  n_liste <- length(liste[[i]])
+  if (n_liste!=0)
+  {
+    for (j in 1:n_liste)
+    {
+      stations$nbstand200[i]<-stations$nbstand200[i] + (stations[(liste[[i]][j]),9])
+    }
+  }
+}
+
+liste<-voisindist(500)
+stations$nbstand500<-0
+for (i in (1:nrow(stations)))
+{
+  n_liste <- length(liste[[i]])
+  if (n_liste!=0)
+  {
+    for (j in 1:n_liste)
+    {
+      stations$nbstand500[i]<-stations$nbstand500[i] + (stations[(liste[[i]][j]),9])
+    }
+  }
+}
+liste<-voisindist(1000)
+stations$nbstand1000<-0
+for (i in (1:nrow(stations)))
+{
+  n_liste <- length(liste[[i]])
+  if (n_liste!=0)
+  {
+    for (j in 1:n_liste)
+    {
+      stations$nbstand1000[i]<-stations$nbstand1000[i] + (stations[(liste[[i]][j]),9])
+    }
+  }
+}
+rm(liste)
+
+# hauteur relative par rapport au n plus proches voisins
+#########################################################
+
+#essai avec les 5 et les 10 plus proches voisins
+
+matrixvoisin<-voisinnum(5)
+for (i  in (1:nrow(stations)))
+{
+  stations$hr5[i]<-stations[i,"alt"]-sum(stations[matrixvoisin[i,],"alt"])/5
+}
+
+matrixvoisin<-voisinnum(10)
+for (i  in (1:nrow(stations)))
+{
+  stations$hr10[i]<-stations[i,"alt"]-sum(stations[matrixvoisin[i,],"alt"])/5
+}
