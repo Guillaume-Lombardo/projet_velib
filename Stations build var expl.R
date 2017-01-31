@@ -6,6 +6,7 @@
 library(jsonlite)
 library(curl)
 library(cluster)
+require(geosphere)
 
 #pour avoir les altitudes et la clé d'API associée
 library(googleway)
@@ -57,15 +58,40 @@ rm(nstations200)
 # Fonction qui donne la liste des stations dans un rayon de x km
 #################################################################
 
-#Fonction voisindist (numstation, dist)
-#argument : numéro d'une station numstation, rayon dist autour de la station initiale dans lequel on regarde
-#sortie : une liste de numéro de stations
-
-voisindist <- function(numstation, dist)
+#Fonction voisindist(dist)
+#argument : rayon 'dist' autour des stations  dans lequel on regarde
+#sortie : une liste de vecteurs de numéro de stations (numéros dans l'ordre de la matrice station)
+# (pour la station i, listedist[[i]] est un vecteur des stations proches de la station de la ième ligne de la matrice stations)
+#la matrice station est considérée comme une variable globale
+voisindist <- function(dist)
 {
-  return(0)
+  listedist<-vector('list', nrow(stations))
+  for (i in 1:nrow(stations))
+  {
+    listedist[[i]]<-which(distGeo(stations[i,13:14], stations[-i,13:14] )<(dist*1000))
+  }
+  return(listedist)
 }
 
-voisindist(1,1)
+
+# Fonction qui donne la liste des k plus proches stations
+#################################################################
+
+#Fonction voisinnum(n)
+#argument : nombre n de stations à retenir
+#sortie : une matrice de nrow(stations) lignes et n colonnes
+# la première colonne donne la station la plus proche parmi les n et la n est la plus éloignée
+#la matrice station est considérée comme une variable globale
+voisinnum <- function(n)
+{
+  out<-matrix(0,nrow=nrow(stations), ncol=n )
+  for (i in 1:nrow(stations))
+  {
+    temp<-distGeo(stations[i,13:14], stations[-i,13:14] )
+    out[i,]<-which(rank(temp) <= n)
+  }
+  return(out)
+}
+
 
 
