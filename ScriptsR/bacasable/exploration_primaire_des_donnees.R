@@ -82,18 +82,85 @@ data_mod_7j_x_station_L <- sapply(2:ncol(data_mod_7j_x_station),function(x) runm
 names(data_mod_7j_x_station_L) <- names(data_mod_7j_x_station[,-1])
 data_mod_7j_x_station_L$date_mod_7j <- data_mod_7j_x_station$date_mod_7j
 
+### representation graphique 'pour voir'
 plot(seq_along(data_mod_7j_x_station_L$date_mod_7j),data_mod_7j_x_station[,2],type = 'l',ylim = c(0,1))
 for(i in 3:ncol(data_mod_7j_x_station_L)){
   lines(seq_along(data_mod_7j_x_station_L$date_mod_7j),data_mod_7j_x_station_L[,i])
 }
 
+### remise dans le sens stations~date_mod_7J
+
+data_mod_7j_x_station_melt <- melt(data = data_mod_7j_x_station_L,id.vars = c('date_mod_7j'),measure.vars = 2:ncol(data_mod_7j_x_station_L))
+data_mod_7j_x_station_melt$value <- as.numeric(data_mod_7j_x_station_melt$value)
+stations_x_data_mod_7j_L <- dcast(data = data_mod_7j_x_station_melt,formula = variable~date_mod_7j)
+cluster <- lapply(1:12,function(x) kmeans(stations_x_data_mod_7j_L[c(-909,-1219) ,2:ncol(stations_x_data_mod_7j_L)],x,iter.max = 20))
+
+representation_kmeans <- lapply(1:12,function(x) merge(data.frame(number = stations_x_data_mod_7j_L$variable[c(-909,-1219)],cluster = cluster[[x]]$cluster),
+                                                       stations[,c('number','lat','lon')],
+                                                       by="number", all.x=T))
+
+
+i <- 3
+layout(1)
+layout(matrix(1:9,nrow = 3,byrow = T))
+for(i in 2:10){
+  PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans[[i]]$cluster))
+}
+
+
+
+merge(data.frame(number = stations_x_data_mod_7j_L$variable[c(-909,-1219)],cluster = cluster[[x]]$cluster),
+      stations[,c('number','lat','lon')],
+      by="number", all.x=T)
+
+
+representation_kmeans <- merge(data.frame(number = stations_x_data_mod_7j_L$variable[c(-909,-1219)],cluster = cluster2$cluster),
+      stations[,c('number','lat','lon')],
+      by="number", all.x=T)
+
+PlotOnStaticMap(carte, lat=representation_kmeans[,'lat'], lon=representation_kmeans[,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans$cluster))
+
+
+
+
+
+
+
+
+
+as.character(stations_x_data_mod_7j_L[c(909,1219),1])
+stations[stations$number==19108,]
+
+
+
+
+
+
+
+
+
+
+
+
+
+unique(c(sapply(1:ncol(stations_x_data_mod_7j_L), function(x) which(is.na(stations_x_data_mod_7j_L[,x])))))
+summary(stations_x_data_mod_7j_L[stations_x_data_mod_7j_L$variable != '19108',2:5])
+test <- is.na(stations_x_data_mod_7j_L[,2])
+which(test)
+test <- is.na(stations_x_data_mod_7j_L[,3])
+which(test)
+
+test <- sapply(stations_x_data_mod_7j_L[,c(-1)],function(x) all(is.numeric(x)))
+
+class((stations_x_data_mod_7j_L[,c(2)]))
+
 cluster <- lapply(1:10,function(x) kmeans(data_mod_7j_x_station_L[,c(-1,-910)],x,iter.max = 20))
-cluster2 <- kmeans(data_mod_7j_x_station_L[,c(-1,-910)],2,iter.max = 20)
+cluster2 <- kmeans(data_mod_7j_x_station_L[,2:400],2,iter.max = 20)
 
 test <- sapply(data_mod_7j_x_station_L[,c(-1,-910)],function(x) any(is.infinite(x)))
 
 which(names(data_mod_7j_x_station_L)=='19108')
-test[test]
+test1 <- test[!test]
 which(test)
 summary(data_mod_7j_x_station_L[,'19108'])
 sort(data_mod_7j_x_station_L[,909])
