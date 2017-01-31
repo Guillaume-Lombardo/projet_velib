@@ -95,7 +95,7 @@ data_mod_7j_x_station_melt$value <- as.numeric(data_mod_7j_x_station_melt$value)
 stations_x_data_mod_7j_L <- dcast(data = data_mod_7j_x_station_melt,formula = variable~date_mod_7j)
 cluster <- lapply(1:12,function(x) kmeans(stations_x_data_mod_7j_L[c(-909,-1219) ,2:ncol(stations_x_data_mod_7j_L)],x,iter.max = 30))
 
-representation_kmeans <- lapply(1:12,function(x) merge(data.frame(number = stations_x_data_mod_7j_L$variable[c(-909,-1219)],cluster = cluster[[x]]$cluster),
+representation_kmeans <- lapply(1:12,function(x) merge(data.frame(number = stations_x_data_mod_7j_L$variable[c(-909,-1219)],cluster = cluster[[x]]$cluster,stations_x_data_mod_7j_L[c(-909,-1219),-1]),
                                                        stations[,c('number','lat','lon')],
                                                        by="number", all.x=T))
 
@@ -104,4 +104,36 @@ for(i in 2:10){
   PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans[[i]]$cluster))
 }
 
+### profil par classe
 
+
+moyenne_par_classe <- function(x){
+  liste_variable_temps <- names(representation_kmeans[[x]])[which(substr(names(representation_kmeans[[x]]),1,1)=='T')]
+  liste_moyenne <- paste('M', substring(liste_variable_temps,2)," = mean(",liste_variable_temps,")",sep = '') %>%
+    paste(collapse = ', ')
+  chaine_dplyr <-  paste('representation_kmeans[[',x,']] %>% group_by(cluster) %>% summarise(',liste_moyenne,')',sep = '')
+  res <- eval(parse(text =chaine_dplyr))
+  return(res)
+}
+
+profil_par_classe <- lapply(1:12,moyenne_par_classe)
+
+for(i in 2:10){
+  n <- ncol(profil_par_classe[[i]])
+  xx <- seq_along(names(profil_par_classe[[i]])[-1])
+  plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',col = 1,ylim = c(0,1),ylab = 'proportion de velib dans la classe')
+  for(j in 2:i){
+    lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
+  }
+  
+}
+
+### exemple avec 6 classes
+i <- 6
+n <- ncol(profil_par_classe[[i]])
+xx <- seq_along(names(profil_par_classe[[i]])[-1])
+plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',col = 1,ylim = c(0,1),ylab = 'proportion de velib dans la classe')
+for(j in 2:i){
+  lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
+}
+PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans[[i]]$cluster))
