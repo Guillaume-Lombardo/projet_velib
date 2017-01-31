@@ -144,6 +144,7 @@ for (i in (1:nrow(stations)))
 }
 rm(liste)
 
+
 # hauteur relative par rapport au n plus proches voisins
 #########################################################
 
@@ -160,3 +161,34 @@ for (i  in (1:nrow(stations)))
 {
   stations$hr10[i]<-stations[i,"alt"]-sum(stations[matrixvoisin[i,],"alt"])/5
 }
+
+
+
+
+# Distance à la station de métro la plus proche
+#################################################
+
+#récupération des données RATP stockées dans le fichier coordRATP.json
+#a priori, on se sert pour l'instant seulement des latitudes et longiudes des stations
+url="data/coordRATP.json"
+RATP<-fromJSON(sprintf("[%s]", paste(readLines(url2), collapse=",")))
+RATPlonlat<-cbind(RATP$elements$lat,RATP$elements$lon)
+RATPna<-is.na(RATPlonlat[,1])*is.na(RATPlonlat[,2])
+RATPlonlat<-RATPlonlat[RATPna==0,]
+
+#visualisation des stations 
+center<-c(mean(range(RATPlonlat[,1])),mean(range(RATPlonlat[,2])))
+zoom<-MaxZoom(range(RATPlonlat[,1])*1.1,range(RATPlonlat[,2])*1.1 )
+carte<-GetMap(center=center, zoom=10)
+PlotOnStaticMap(carte, lat=RATPlonlat[,1], lon=RATPlonlat[,2], pch=16, cex=1, col="red")
+
+#création de la variable $RATP
+#distance à la sation de métro/RER/tram la plus proche
+for (i  in (1:nrow(stations)))
+{
+  stations$RATP[i]<-min(distGeo(stations[i,13:14], RATPlonlat ))
+}
+
+
+
+i<-1
