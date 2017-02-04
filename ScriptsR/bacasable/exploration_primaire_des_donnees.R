@@ -8,7 +8,7 @@ library(dplyr)
 # taille des objets en memoire : 
 # sapply(ls(),function(x) format(object.size(get(x)),'auto'))
 
-# importation d'un mois de donn?es historique velib
+# importation d'un mois de données historique velib
 # url <- "http://vlsstats.ifsttar.fr/rawdata/RawData/data_all_Paris.jjson"
 # url2 <- "D:/projet_velib/Data/data_all_Paris.jjson_2017-01-01-1483248351"
 url2 <- "./Data/data_all_Paris.jjson_2017-01-01-1483248351.gz"
@@ -37,6 +37,7 @@ coordstations <- merge(data_frame, stations[,c('number','lat','lon')], by="numbe
 
 # retrait des stations sans coordonn?es de la base 
 lignemanquantecoord <- which(is.na(coordstations[,'lat']) | is.na(coordstations[,'lon']))
+unique(coordstations$number[lignemanquantecoord])
 coordstations <- coordstations[-lignemanquantecoord,]
 
 # representation des station sur la carte de paris
@@ -46,10 +47,11 @@ zoom<-MaxZoom(range(representation_basique[,'lat'])*1.1,range(representation_bas
 carte<-GetMap(center=center, zoom=zoom)
 PlotOnStaticMap(carte, lat=representation_basique[,'lat'], lon=representation_basique[,'lon'], pch=16, cex=1, col='blue')
 
-# base de donn?es par date par station :
+# base de données par date par station :
 
 # ajout des proportions
 coordstations$proportion <- coordstations$available_bikes / max((coordstations$available_bike_stands+coordstations$available_bikes),1)
+coordstations$proportion <- ifelse(is.na(coordstations$proportion),0,coordstations$proportion)
 # ajout d'une variable de temps raisonable et d'une variable de temps modulo 7 jours
 coordstations$time <- as.POSIXct(coordstations$last_update/1000, origin="1970-01-01")
 coordstations$date_mod_7j <- paste('T', 
