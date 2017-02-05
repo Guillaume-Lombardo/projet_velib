@@ -1,9 +1,12 @@
 library(jsonlite)
 library(curl)
 library(cluster)
+library(RColorBrewer)
 library(RgoogleMaps)
 library(reshape2)
 library(dplyr)
+library(grid)
+library(gridExtra)
 
 # taille des objets en memoire : 
 # sapply(ls(),function(x) format(object.size(get(x)),'auto'))
@@ -123,18 +126,30 @@ sapply(data_mod_7j_x_station[,-1],max) %>% sort(.) %>% max(.)
 # 																											 by="number", all.x=T))
 
 cluster <- lapply(1:12,function(.x) kmeans(stations_x_data_mod_7j[ ,2:ncol(stations_x_data_mod_7j)],.x,iter.max = 30))
-representation_kmeans <- lapply(1:12,function(x) merge(data.frame(number = stations_x_data_mod_7j$number,
-																																	cluster = cluster[[x]]$cluster,stations_x_data_mod_7j[,-1]), 
-																											 stations[,c('number','lat','lon')], by="number", all.x=T))
+representation_kmeans <- lapply(1:12,function(.x) merge(data.frame(number = stations_x_data_mod_7j$number,
+																																	 cluster = cluster[[.x]]$cluster,stations_x_data_mod_7j[,-1]), 
+																												stations[,c('number','lat','lon')], by="number", all.x=T))
 
 
 ### representation graphique des kmeans en fonction du nombre de groupe
+# tracer le graphique grid a : grid.draw(a)
 for(i in 2:10){
-  PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans[[i]]$cluster))
+	dev.off()
+  PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
+	grid.echo()
+	eval(parse(text = paste('map_plot_',i,'_cluster <- grid.grab()',sep = '')))
+	dev.off()
 }
 
-### profil par classe
+dev.off()
+plot(x = 1:12,y = sapply(1:12,function(.x) cluster[[.x]]$betweenss/cluster[[.x]]$totss), type = 'l',ylim = c(0,1),ylab = 'part de la variance expliqué par les groupes', xlab = 'nombre de classe')
+abline(h=(0:5)/5)
+abline(v=(0:6)*2)
+grid.echo()
+Quantite_inter_sur_totale <- grid.grab()
+dev.off()
 
+### profil par classe
 
 moyenne_par_classe <- function(x){
   liste_variable_temps <- names(representation_kmeans[[x]])[which(substr(names(representation_kmeans[[x]]),1,1)=='T')]
@@ -154,7 +169,6 @@ for(i in 2:10){
   for(j in 2:i){
     lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
   }
-  
 }
 
 ### exemple avec 6 classes
