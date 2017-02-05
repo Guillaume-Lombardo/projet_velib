@@ -127,7 +127,8 @@ sapply(data_mod_7j_x_station[,-1],max) %>% sort(.) %>% max(.)
 
 cluster <- lapply(1:12,function(.x) kmeans(stations_x_data_mod_7j[ ,2:ncol(stations_x_data_mod_7j)],.x,iter.max = 30))
 representation_kmeans <- lapply(1:12,function(.x) merge(data.frame(number = stations_x_data_mod_7j$number,
-																																	 cluster = cluster[[.x]]$cluster,stations_x_data_mod_7j[,-1]), 
+																																	 cluster = cluster[[.x]]$cluster,
+																																	 stations_x_data_mod_7j[,-1]), 
 																												stations[,c('number','lat','lon')], by="number", all.x=T))
 
 
@@ -175,13 +176,21 @@ for(i in 2:10){
   dev.off()
 }
 
-### exemple avec 6 classes
-ifelse(is.null(dev.list()),1,dev.off())
-i <- 6
-n <- ncol(profil_par_classe[[i]])
-xx <- seq_along(names(profil_par_classe[[i]])[-1])
-plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',col = 1,ylim = c(0,1),ylab = 'proportion de velib dans la classe')
-for(j in 2:i){
-  lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
+# PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
+# dev.off()
+
+for(i in 2:10){
+	for (k in 1:i){
+		ifelse(is.null(dev.list()),1,dev.off())
+		plot(xx,as.data.frame(profil_par_classe[[i]][k,2:n]),type = 'l',col = 1,ylim = c(0,1),ylab = 'proportion de velib dans la classe')
+		for(j in 3:(ncol(representation_kmeans[[i]])-2)){
+			if(representation_kmeans[[i]]$cluster[j]==k){
+				lines(xx,data_mod_7j_x_station[,j], col = 'lightgray')	
+			}
+		}
+		lines(xx,as.data.frame(profil_par_classe[[i]][k,2:n]), col = 1)	
+		grid.echo()
+		eval(parse(text = paste('profil_',i,'_cluster_classe_',k,' <- grid.grab()',sep = '')))
+		dev.off()
+	}
 }
-PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
