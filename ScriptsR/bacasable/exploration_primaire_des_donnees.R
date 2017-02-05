@@ -49,7 +49,7 @@ center<-c(mean(range(representation_basique[,'lat'])),mean(range(representation_
 zoom<-MaxZoom(range(representation_basique[,'lat'])*1.1,range(representation_basique[,'lon'])*1.1 )
 carte<-GetMap(center=center, zoom=zoom)
 PlotOnStaticMap(carte, lat=representation_basique[,'lat'], lon=representation_basique[,'lon'], pch=16, cex=1, col='blue')
-
+dev.off()
 # base de données par date par station :
 
 # ajout des proportions
@@ -134,14 +134,14 @@ representation_kmeans <- lapply(1:12,function(.x) merge(data.frame(number = stat
 ### representation graphique des kmeans en fonction du nombre de groupe
 # tracer le graphique grid a : grid.draw(a)
 for(i in 2:10){
-	dev.off()
+	ifelse(is.null(dev.list()),1,dev.off())
   PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
 	grid.echo()
 	eval(parse(text = paste('map_plot_',i,'_cluster <- grid.grab()',sep = '')))
 	dev.off()
 }
 
-dev.off()
+ifelse(is.null(dev.list()),1,dev.off())
 plot(x = 1:12,y = sapply(1:12,function(.x) cluster[[.x]]$betweenss/cluster[[.x]]$totss), type = 'l',ylim = c(0,1),ylab = 'part de la variance expliqué par les groupes', xlab = 'nombre de classe')
 abline(h=(0:5)/5)
 abline(v=(0:6)*2)
@@ -163,15 +163,20 @@ moyenne_par_classe <- function(x){
 profil_par_classe <- lapply(1:12,moyenne_par_classe)
 
 for(i in 2:10){
+	ifelse(is.null(dev.list()),1,dev.off())
   n <- ncol(profil_par_classe[[i]])
   xx <- seq_along(names(profil_par_classe[[i]])[-1])
   plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',col = 1,ylim = c(0,1),ylab = 'proportion de velib dans la classe')
   for(j in 2:i){
     lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
   }
+  grid.echo()
+  eval(parse(text = paste('profil_de_classe_',i,'_cluster <- grid.grab()',sep = '')))
+  dev.off()
 }
 
 ### exemple avec 6 classes
+ifelse(is.null(dev.list()),1,dev.off())
 i <- 6
 n <- ncol(profil_par_classe[[i]])
 xx <- seq_along(names(profil_par_classe[[i]])[-1])
@@ -179,4 +184,4 @@ plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',col = 1,ylim = c
 for(j in 2:i){
   lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',col = j,ylim = c(0,1))  
 }
-PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=as.numeric(representation_kmeans[[i]]$cluster))
+PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
