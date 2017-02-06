@@ -9,7 +9,7 @@ library(grid)
 library(gridExtra)
 
 # taille des objets en memoire : 
-# sapply(ls(),function(x) format(object.size(get(x)),'auto'))
+# sapply(ls(),function(.x) format(object.size(get(.x)),'auto'))
 
 # importation d'un mois de données historique velib
 # url <- "http://vlsstats.ifsttar.fr/rawdata/RawData/data_all_Paris.jjson"
@@ -46,10 +46,10 @@ coordstations <- coordstations[-lignemanquantecoord,]
 # representation des station sur la carte de paris
 representation_basique <- unique(coordstations[,c('lat','lon')])
 center<-c(mean(range(representation_basique[,'lat'])),mean(range(representation_basique[,'lon'])))
-zoom<-MaxZoom(range(representation_basique[,'lat'])*1.1,range(representation_basique[,'lon'])*1.1 )
+zoom<-MaxZoom(range(representation_basique[,'lat'])*1,range(representation_basique[,'lon'])*1 )
 carte<-GetMap(center=center, zoom=zoom)
-PlotOnStaticMap(carte, lat=representation_basique[,'lat'], lon=representation_basique[,'lon'], pch=16, cex=1, col='blue')
-dev.off()
+# PlotOnStaticMap(carte, lat=representation_basique[,'lat'], lon=representation_basique[,'lon'], pch=16, cex=1, col='blue')
+# dev.off()
 # base de données par date par station :
 
 # ajout des proportions
@@ -163,6 +163,7 @@ moyenne_par_classe <- function(x){
 
 profil_par_classe <- lapply(1:12,moyenne_par_classe)
 
+# tracer profil de classe en fonction du nombre de classes
 for(i in 2:10){
 	ifelse(is.null(dev.list()),1,dev.off())
   n <- ncol(profil_par_classe[[i]])
@@ -179,6 +180,7 @@ for(i in 2:10){
 # PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], pch=16, cex=1, col=brewer.pal(i, 'Spectral')[as.numeric(representation_kmeans[[i]]$cluster)])
 # dev.off()
 
+# tracer profil de classe avec les membre de la classe
 for(i in 2:10){
 	for (k in 1:i){
 		ifelse(is.null(dev.list()),1,dev.off())
