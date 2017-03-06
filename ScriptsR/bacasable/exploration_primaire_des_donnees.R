@@ -238,4 +238,6 @@ for(i in 2:10){
 	}
 }
 
+
+# export de la classif 6 classe sur un mois modulo 7 jours.
 write.table(x = representation_kmeans[[6]][,c(1,2)],file = './Sortie/clustering_6_classes_mod7j.csv',sep = ';',row.names = F)
