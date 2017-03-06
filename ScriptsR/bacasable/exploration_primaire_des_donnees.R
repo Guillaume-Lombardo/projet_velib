@@ -54,7 +54,7 @@ carte<-GetMap(center=center, zoom=zoom)
 # base de données par date par station :
 
 # ajout des proportions
-coordstations$proportion <- coordstations$available_bikes / max((coordstations$available_bike_stands+coordstations$available_bikes),1)
+coordstations$proportion <- coordstations$available_bikes / pmax((coordstations$available_bike_stands+coordstations$available_bikes),1)
 coordstations$proportion <- ifelse(is.na(coordstations$proportion),0,coordstations$proportion)
 # ajout d'une variable de temps raisonable et d'une variable de temps modulo 7 jours
 coordstations$time <- as.POSIXct(coordstations$last_update/1000, origin="1970-01-01")
