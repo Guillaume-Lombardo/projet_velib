@@ -7,6 +7,7 @@ library(reshape2)
 library(dplyr)
 library(grid)
 library(gridExtra)
+library(gridGraphics)
 
 # taille des objets en memoire : 
 # sapply(ls(),function(.x) format(object.size(get(.x)),'auto'))
@@ -62,6 +63,14 @@ coordstations$date_mod_7j <- paste('T',
                                    format(coordstations$time, "%H"), 
                                    floor(as.numeric(format(coordstations$time, "%M"))/20)*20, 
                                    sep = '_')
+
+coordstations$jour <- paste('J',format(coordstations$time, "%w"),sep = '_')
+coordstations$identifiant_jour <- paste(coordstations$jour,coordstations$number,sep = '_')
+coordstations$date_mod_j <- paste('T', 
+                                   format(coordstations$time, "%H"), 
+                                   floor(as.numeric(format(coordstations$time, "%M"))/20)*20, 
+                                   sep = '_')
+
 # head(coordstations$date_mod_7j,10)
 # names(coordstations)
 
@@ -91,6 +100,33 @@ eval(parse(text=paste('data_mod_7j_x_station[,',
 
 unique(data_mod_7j_x_station$date_mod_7j)
 sapply(data_mod_7j_x_station[,-1],max) %>% sort(.) %>% max(.) 
+
+
+
+coordstations_melt2 <- melt(data = coordstations,id.vars = c('identifiant_jour','date_mod_j'), measure.vars = 'proportion')
+stations_x_data_mod_j <- dcast(data = coordstations_melt2,formula = identifiant_jour~date_mod_j,fun.aggregate = mean)
+data_mod_j_x_station <- dcast(data = coordstations_melt2,formula = date_mod_j~identifiant_jour,fun.aggregate = mean)
+
+eval(parse(text=paste('stations_x_data_mod_j[,',
+                      2:ncol(stations_x_data_mod_j),
+                      '] <- ifelse(is.na(stations_x_data_mod_j[,',
+                      2:ncol(stations_x_data_mod_j),
+                      ']),0,stations_x_data_mod_7j[,',
+                      2:ncol(stations_x_data_mod_j),
+                      '])',
+                      sep = '')))
+eval(parse(text=paste('data_mod_j_x_station[,',
+                      2:ncol(data_mod_j_x_station),
+                      '] <- ifelse(is.na(data_mod_j_x_station[,',
+                      2:ncol(data_mod_j_x_station),
+                      ']),0,data_mod_j_x_station[,',
+                      2:ncol(data_mod_j_x_station),
+                      '])',
+                      sep = '')))
+unique(data_mod_j_x_station$date_mod_j)
+sapply(data_mod_j_x_station[,-1],max) %>% sort(.) %>% max(.) 
+
+
 
 # plot(seq_along(data_mod_7j_x_station$date_mod_7j),data_mod_7j_x_station[,2],type = 'l',ylim = c(0,1))
 # for(i in 3:ncol(data_mod_7j_x_station)){
@@ -131,6 +167,11 @@ representation_kmeans <- lapply(1:12,function(.x) merge(data.frame(number = stat
 																																	 stations_x_data_mod_7j[,-1]), 
 																												stations[,c('number','lat','lon')], by="number", all.x=T))
 
+cluster2 <- lapply(1:12,function(.x) kmeans(stations_x_data_mod_j[ ,2:ncol(stations_x_data_mod_j)],.x,iter.max = 30))
+representation_kmeans2 <- lapply(1:12,function(.x) merge(data.frame(number = as.numeric(substr(stations_x_data_mod_j$identifiant_jour,4,12)),
+                                                                    cluster = cluster2[[.x]]$cluster,
+                                                                    stations_x_data_mod_j), 
+                                                         stations[,c('number','lat','lon')], by="number", all.x=T))
 
 ### representation graphique des kmeans en fonction du nombre de groupe
 # tracer le graphique grid a : grid.draw(a)
@@ -196,3 +237,5 @@ for(i in 2:10){
 		dev.off()
 	}
 }
+
+write.table(x = representation_kmeans[[6]][,c(1,2)],file = './Sortie/clustering_6_classes_mod7j.csv',sep = ';',row.names = F)
