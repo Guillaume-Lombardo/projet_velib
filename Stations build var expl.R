@@ -42,11 +42,11 @@ i<-0
 #on fait une boucle car le programme e gère pas toue la liste des stations d'un coup
 for (i in 0:(nstations200-1))
 {
-  df_locations <- stations[(i*200+1):((i+1)*200),c(13,14)]
+  df_locations <- stations[(i*200+1):((i+1)*200),c("lat","lon")]
   alt[(i*200+1):((i+1)*200)]<-google_elevation(df_locations = df_locations, key = api_key)$results[,1]
 }
 # on complète par les statins restantes
-df_locations <- stations[(nstations200*200+1):(nrow(stations)),c(13,14)]
+df_locations <- stations[(nstations200*200+1):(nrow(stations)),c("lat","lon")]
 alt[(nstations200*200+1):(nrow(stations))]<-google_elevation(df_locations = df_locations, key = api_key)$results[,1]
 #on affecte au dataframe station et on nettoie
 stations$alt<-alt
@@ -69,7 +69,7 @@ voisindist <- function(dist)
   listedist<-vector('list', nrow(stations))
   for (i in 1:nrow(stations))
   {
-    listedist[[i]]<-which(distGeo(stations[i,13:14], stations[-i,13:14] )<(dist))
+    listedist[[i]]<-which(distGeo(stations[i,c("lat","lon")], stations[-i,c("lat","lon")] )<(dist))
   }
   return(listedist)
 }
@@ -88,7 +88,7 @@ voisinnum <- function(n)
   out<-matrix(0,nrow=nrow(stations), ncol=n )
   for (i in 1:nrow(stations))
   {
-    temp<-distGeo(stations[i,13:14], stations[-i,13:14] )
+    temp<-distGeo(stations[i,c("lat","lon")], stations[-i,c("lat","lon")] )
     out[i,]<-which(rank(temp) <= n)
   }
   return(out)
@@ -165,6 +165,21 @@ for (i  in (1:nrow(stations)))
 
 rm(matrixvoisin)
 
+#mesure du degré d'excentricité
+###############################
+
+#distance au centre
+##################
+center<-c(mean(range(stations[,"lat"])),mean(range(stations[,"lon"])))
+
+stations$distcentre<-apply(stations[,c("lat","lon")], MARGIN=1, p2=center, FUN=distGeo)
+
+distanceatoueslesstations<-function(coord)
+{
+  sum(distGeo(coord, stations[,c("lat","lon")] ))
+}
+
+stations$distcentre2<-apply(stations[,c("lat","lon")], MARGIN=1, FUN=distanceatoueslesstations)/1227
 
 # Distance à la station de métro la plus proche
 #################################################
@@ -187,7 +202,7 @@ PlotOnStaticMap(carte, lat=RATPlonlat[,1], lon=RATPlonlat[,2], pch=16, cex=1, co
 #distance à la sation de métro/RER/tram la plus proche
 for (i  in (1:nrow(stations)))
 {
-  stations$RATP[i]<-min(distGeo(stations[i,13:14], RATPlonlat ))
+  stations$RATP[i]<-min(distGeo(stations[i,c("lat","lon")], RATPlonlat ))
 }
 
 rm(RATP)
@@ -273,10 +288,10 @@ rm(latlonequip)
 
 equip$typequ2<-as.factor(equip$typequ2)
 
-type<-"C3"
+type<-"F2"
 center<-c(48.85,2.35)
-carte<-GetMap(center=center, zoom=12)
-PlotOnStaticMap(carte, lat=equip[((equip$typequ2==type)&(!is.na(equip$lat))),13], lon=equip[((equip$typequ2==type)&(!is.na(equip$lat))),14], pch=16, cex=1, col="red")
+carte<-GetMap(center=center, zoom=11)
+PlotOnStaticMap(carte, lat=equip[((equip$typequ2==type)&(!is.na(equip$lat))),13], lon=equip[((equip$typequ2==type)&(!is.na(equip$lat))),14], pch=16, cex=3, col="red")
 
 #equip[equip$typequ2=="E3",]
 
@@ -298,7 +313,7 @@ for (i in 1:n_equip)
 {
   stations$temp<-0
   names(stations)[ncol(stations)]<-typeequip[i]
-  stations[,ncol(stations)]<-apply(stations[,(13:14)], MARGIN=1, type=typeequip[i], FUN=distanceequip)
+  stations[,ncol(stations)]<-apply(stations[,c("lat","lon")], MARGIN=1, type=typeequip[i], FUN=distanceequip)
 }
 
 
