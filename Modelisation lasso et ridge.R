@@ -35,6 +35,7 @@ Y<-data[,1]
 
 #on fait tourner le lasso
 lasso=cv.glmnet(Xapp,Y,family="multinomial",alpha=1)
+lambdachoisi=lasso$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(lasso)
@@ -49,11 +50,12 @@ outend$X2<-1
 outend<-outend[order(outend[,1], decreasing=T),]
 barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
 
+
 #table de confusion
 Yprev<-predict(lasso, Xapp, type="class",s=lambdachoisi)
-confusion<-table(Yprev,Y)
-sommel<-apply(confusion, 2, sum)
-confusionlasso<-round(100*apply(confusion, MARGIN=1, sommel, FUN="/"),digits=0)
+confusionlasso<-table(Yprev,Y)
+sommel<-apply(confusionlasso, 2, sum)
+confusionlasso<-round(100*apply(confusionlasso, MARGIN=1, sommel, FUN="/"),digits=0)
 confusionlasso
 
 
@@ -62,6 +64,7 @@ confusionlasso
 
 #on fait tourner le lasso
 ridge=cv.glmnet(Xapp,Y,family="multinomial",alpha=0)
+lambdachoisi=ridge$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(ridge)
@@ -79,9 +82,9 @@ barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
 
 #table de confusion
 Yprev<-predict(ridge, Xapp, type="class",s=lambdachoisi)
-confusion<-table(Yprev,Y)
-sommel<-apply(confusion, 2, sum)
-confusionridge<-round(100*apply(confusion, MARGIN=1, sommel, FUN="/"),digits=0)
+confusionridge<-table(Yprev,Y)
+sommel<-apply(confusionridge, 2, sum)
+confusionridge<-round(100*apply(confusionridge, MARGIN=1, sommel, FUN="/"),digits=0)
 confusionridge
 
 #elasticnet
@@ -89,6 +92,7 @@ confusionridge
 
 #on fait tourner le lasso
 elasticnet=cv.glmnet(Xapp,Y,family="multinomial",alpha=0)
+lambdachoisi=elasticnet$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(elasticnet)
@@ -108,7 +112,7 @@ barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
 Yprev<-predict(elasticnet, Xapp, type="class",s=lambdachoisi)
 confusionelasticnet<-table(Yprev,Y)
 sommel<-apply(confusion, 2, sum)
-confusionelasticnet<-round(100*apply(confusionridge, MARGIN=1, sommel, FUN="/"),digits=0)
+confusionelasticnet<-round(100*apply(confusionelasticnet, MARGIN=1, sommel, FUN="/"),digits=0)
 confusionelasticnet
 
 
