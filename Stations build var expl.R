@@ -306,5 +306,5 @@ for (i in 1:n_equip)
 #sortie de la matrice complète dans un csv
 ############################################
 
-write.csv(stations, file = "Jeuvarexpli.csv")
+write.csv(stations, file = "Sortie/Jeuvarexpli.csv")
 
