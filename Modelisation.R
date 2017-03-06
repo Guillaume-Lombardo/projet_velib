@@ -16,6 +16,7 @@ data<-merge(cluster, var_expli)
 data$number<-NULL
 data$cluster<-as.factor(data$cluster)
 
+#data<-data[,1:12]
 # summary(data)
 # sapply(data[,-1], FUN=as.double)
 
