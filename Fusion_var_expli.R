@@ -15,6 +15,9 @@ var_expli3<-read.csv("Sortie/stations_sirene_voronoi500.csv", sep=",")
 var_expli3$X<-NULL
 var_expli3$name<-NULL
 var_expli3$address<-NULL
+var_expli3$lon<-NULL
+var_expli3$lat<-NULL
+
 
 var_expli<-merge(x=var_expli1, y=var_expli2, by="number")
 var_expli<-merge(x=var_expli, y=var_expli3, by="number")
