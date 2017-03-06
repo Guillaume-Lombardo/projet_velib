@@ -29,7 +29,7 @@ stations<-stations[[1]]
 stations$lat<-stations$position$lat
 stations$lon<-stations$position$lng
 
-
+stations$position<-NULL
 
 
 #récupération de la hauteur des stations
@@ -305,3 +305,6 @@ for (i in 1:n_equip)
 
 #sortie de la matrice complète dans un csv
 ############################################
+
+write.csv(stations, file = "Jeuvarexpli.csv")
+
