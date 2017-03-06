@@ -172,8 +172,10 @@ rm(matrixvoisin)
 #récupération des données RATP stockées dans le fichier coordRATP.json
 #a priori, on se sert pour l'instant seulement des latitudes et longiudes des stations
 url="data/coordRATP.json"
-RATP<-fromJSON(sprintf("[%s]", paste(readLines(url), collapse=",")))
-RATPlonlat<-as.data.frame(matrix((unlist(RATP[[1]]$fields$coord)), ncol=2, byrow = T))
+RATP<-fromJSON(url)
+RATPlonlat<-cbind(RATP$elements$lat,RATP$elements$lon)
+RATPna<-is.na(RATPlonlat[,1])*is.na(RATPlonlat[,2])
+RATPlonlat<-RATPlonlat[RATPna==0,]
 
 #visualisation des stations 
 center<-c(mean(range(RATPlonlat[,1])),mean(range(RATPlonlat[,2])))
@@ -299,3 +301,7 @@ for (i in 1:n_equip)
   stations[,ncol(stations)]<-apply(stations[,(13:14)], MARGIN=1, type=typeequip[i], FUN=distanceequip)
 }
 
+
+
+#sortie de la matrice complète dans un csv
+############################################
