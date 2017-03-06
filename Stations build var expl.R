@@ -318,6 +318,29 @@ for (i in 1:n_equip)
 
 
 
+# Pour les variables RATP et equipements
+# au lieu de prendre la distance, on rajoute une fonction de la distance
+# ici exp(-distance²/sigma)
+nomcol<-colnames(stations)
+first<-which(nomcol[]=="RATP")
+last<-which(nomcol[]=="Gb")
+
+#la fonction de distance
+expdist <- function(x, sigma)
+{
+  exp(-x*x/sigma)
+}
+#sigma le paramètre de l'exponentielle de la fonction
+#qui transforme la distance
+sigma<-100000
+
+for (i in first:last)
+{
+  stations$temp<-0
+  names(stations)[ncol(stations)]<-paste("exp",nomcol[i])
+  stations[,ncol(stations)]<-expdist(stations[,i],sigma)
+}
+
 #sortie de la matrice complète dans un csv
 ############################################
 

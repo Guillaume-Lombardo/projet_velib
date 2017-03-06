@@ -4,7 +4,8 @@ library(glmnet)
 
 #importations des données
 #########################
-
+boxplot(alt~bonus,data = data[,c('alt','bonus')])
+class(data$bonus)
 #variables explicatives
 var_expli<-read.csv("Sortie/Jeuvarexplifinal.csv", sep=",")
 var_expli$X<-NULL
@@ -72,7 +73,7 @@ out22<-abs(out2[[1]])
 for (i in 2:6)
 {
   out22<-out22+abs(out2[[i]])
-  
+
 }
 outend<-as.data.frame(as.matrix(out22))
 outend$X2<-1
