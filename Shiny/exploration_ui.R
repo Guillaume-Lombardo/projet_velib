@@ -12,5 +12,6 @@ fluidRow(
             checkboxInput("B_var2_norm","Centrer-réduire Var2?")),
          actionButton("B_go","Mettre à jour")
          ),
-  column(6,leafletOutput("B_map",height=800))
+  column(4,leafletOutput("B_map1",height=600)),
+  column(4,leafletOutput("B_map2",height=600))
 )
