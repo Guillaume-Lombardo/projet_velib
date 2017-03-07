@@ -72,7 +72,12 @@ fluidRow(
          hr(),
          #affiche une mesure de deviance de CV 
          #en fonction de lambda pour lasso, ridge et elasticnet
-         uiOutput( "Caffichedev")
+         uiOutput( "Caffichedev"),
+         
+         hr()
+         
+         #affiche la carte des stations mal classées
+         # leafletOutput("C_map")
          
   )
 )
