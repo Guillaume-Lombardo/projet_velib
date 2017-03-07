@@ -195,3 +195,4 @@ for(i in 2:ncol(station_x_date_mod7j)){
 # export du resultat vers un csv (sep = ';') pour eviter le temps (long) de calcul precedent !
 
 write.table(x = station_x_date_mod7j,file = './Sortie/station_x_date_mod7j.csv',sep = ';',dec = ',',row.names = F)
+write.table(x = stations[,c('number','lat','lon')],file = './Sortie/stations_gps.csv',sep = ';',dec = ',',row.names = F)
