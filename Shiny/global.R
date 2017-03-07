@@ -6,6 +6,9 @@ library(rAmCharts)
 
 
 #data (1 ligne par station) doit contenir les variables à afficher et la variable number
+#data doit contenir les variables à afficher et la variable number
+#stations doit contenir number, lat, lon, name
+#polygones doit être un SpatialPolygons
 #var_polygone est la variable représentée (couleurs polygones), doit être dans data
 #var_point est pour colorer les points
 #lbl_var_polygone : libellé de la variable pour la légende

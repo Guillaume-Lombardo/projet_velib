@@ -13,15 +13,20 @@ fluidRow(
                        label = 'nombre de variable à afficher par classe', 
                        value = 5,
                        min = 1,
-                       max = 30
+                       max = 10
            ),
+           selectInput(inputId = 'Aclasse_detail', label = 'classe pour laquelle on veut des details', 
+                       selected = 1,
+                       choices = 1:10), 
            actionButton('AmiseAjour','activation !')
-         ),
-         # deuxieme colonne avec les sortiesw
-         column(width = 8, 
-                
-                textOutput("amod1")
-                
          )
+  ),
+  # deuxieme colonne avec les sortiesw
+  column(width = 8, 
+         textOutput("Amod1"),
+         amChartsOutput('Aprofil_classe'),
+         amChartsOutput('Adetail_classe')
+         
   )
 )
+
