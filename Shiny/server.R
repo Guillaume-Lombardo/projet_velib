@@ -1,4 +1,4 @@
-shinyServer(function(input, output) {
+shinyServer(function(input, output,session) {
   source("classification_server.R", local = TRUE, encoding = "UTF-8")
   source("exploration_server.R", local = TRUE, encoding = "UTF-8")
   source("modelisation_server.R", local = TRUE, encoding = "UTF-8")

@@ -1,24 +1,88 @@
+
+Cmodele <- reactive({
+  input$Cgo
+  isolate({
+  scale<-1
+  if(!input$Cscale){
+    scale<-0
+  }
+  nommodele <- paste0(input$Ckmeans, input$Cselecmod,scale,".RDS")
+  #modele<-readRDS(file = nommodele)
+  #pur l'instant, on a un seul modèle en stock donc à modifier
+  modele<-readRDS(file = "../Modeles/Lasso61.RDS")
+  })
+})
+
 output$mod1 <- renderText({
-  
-  
-  paste("Un bien beau modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes")
+   paste("Un bien beau modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes ")
+  })
+
+#le graphique qui va afficher le barplot de l'importance des variables dans le modèle
+output$CImpvarPlot <- renderAmCharts({
+  input$Cgo
+  isolate({
+
+
+    if (input$Cselecmod == "Lasso") {
+      #Lasso
+      #représentation des coefficients les plus importants
+      #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
+      modele<-Cmodele()
+      out2<-coef(modele)
+      out22<-abs(out2[[1]])
+      for (i in 2:input$Ckmeans)
+      {
+        out22<-out22+abs(out2[[i]])
+
+      }
+      out22<-as.data.frame(as.matrix(out22))
+      out22$X2<-row.names(out22)
+      out22<-out22[order(out22[,1], decreasing=T),]
+      amBarplot(x="X2", y="1", data=out22[1:10,], export = T, 
+                main= "Importance des variables", 
+                xlab = "Variables explicatives", 
+                ylab="somme des valeaurs absolues des beta")
+    }
+    else
+    {
+      x= 1:5
+      amHist(x, export = T)
+    }
+   #fin isolate
+    
+  })
+})
+
+#On affiche le graphique des importances si c'est possible pour le modèle retenu
+output$Cafficheimportance <- renderUI({
+  input$Cgo
+  isolate({
+    if (input$Cselecmod == "Lasso") {
+      amChartsOutput("CImpvarPlot")
+    }
+    #fin isolate
+  })
 })
 
 
-# output$distPlot <- renderAmCharts({
-#   input$go
+
+
+
+
+
+
+
+
+
+# output$CdistPlot2 <- renderAmCharts({
+#   input$Cgo
 #   isolate({
-#     # generate bins based on input$bins from ui.R
-#     #x    <- faithful[, 2]
-#     choixcol <- names(faithful)==(input$colonne)
-#     x<-faithful[,choixcol]
-#     bins <- seq(min(x), max(x), length.out = input$bins + 1)
-#     
-#     # draw the histogram with the specified number of bins
-#     #amHist(x, breaks = bins, col = input$colorselect, border = 'white', main=input$titre, xlab=input$colonne, export=T)
-#     amHist(x, control_hist = list(breaks = bins), col = input$colorselect , border = "white", main=input$titre, xlab=input$colonne)
-#     #amHist(x)
-#     
+# 
+#     x= 1:5
+# 
+#     amHist(x, export = T)
+# 
+# 
 #     #fin isolate
-#   })   
+#   })
 # })

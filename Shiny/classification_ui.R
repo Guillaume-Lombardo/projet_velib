@@ -11,15 +11,16 @@ fluidRow(
            #selection du modèle
            sliderInput(inputId = 'Anb_courbe', 
                        label = 'nombre de variable à afficher par classe', 
-                       selected = 5,
-                       choices = 1:30
+                       value = 5,
+                       min = 1,
+                       max = 30
            ),
-           activeButton('AmiseAjour','activation !')
+           actionButton('AmiseAjour','activation !')
          ),
          # deuxieme colonne avec les sortiesw
          column(width = 8, 
                 
-                textOutput("mod1")
+                textOutput("amod1")
                 
          )
   )

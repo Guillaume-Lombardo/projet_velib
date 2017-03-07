@@ -10,24 +10,29 @@ fluidRow(
                        choices = 2:10), 
            
            #selection du modèle
-           selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = 1,
-                       choices = c("Lasso"="Lasso", "Ridge"=2, "Elasticnet",
+           selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = "Lasso",
+                       choices = c("Lasso", "Ridge", "Elasticnet",
                                    "Random Forest", "SVM")),
            
            # selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = 1,
            #             choices = c("Lasso" = 1, "Ridge" = 2, "Elasticnet" = 3,
            #                         "Random Forest" = 4, "SVM"=5)),
            
-           #Proposition de centrer-réduire les variables
+           # #Proposition de centrer-réduire les variables
            checkboxInput(inputId = "Cscale", label = "Centrer-réduire ?"),
-           
-           #action boutton pour lancer le calcul
+
+           # #action boutton pour lancer le calcul
            actionButton(inputId="Cgo", "Go !")
   )),
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
-         textOutput("mod1")
+         textOutput("mod1"),
+         
+          uiOutput( "Cafficheimportance")
+         
+         # ,
+         # amChartsOutput("CdistPlot2")
          
   )
   )
