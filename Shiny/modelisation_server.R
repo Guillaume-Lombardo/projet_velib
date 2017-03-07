@@ -86,7 +86,7 @@ output$Ctableconfusion <- renderTable({
       else{
         X<-readRDS(file = "../Modeles/Xnonscale.RDS")
       }
-      url<-paste0("../Modeles/Y",k,".RDS")
+      url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
       Y <- readRDS(file = url)
       modele<-Cmodele()
       Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
@@ -111,7 +111,7 @@ output$Ctableconfusionp <- renderTable({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
-    url<-paste0("../Modeles/Y",k,".RDS")
+    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
@@ -138,7 +138,7 @@ output$Cpourcentagebienclasse <- renderText({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
-    url<-paste0("../Modeles/Y",k,".RDS")
+    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
