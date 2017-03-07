@@ -1,38 +1,38 @@
 library(shiny)
 library(rAmCharts)
 
-require(jsonlite)
-require(curl)
-require(cluster)
-require(RColorBrewer)
-require(RgoogleMaps)
-require(reshape2)
-require(plyr)
-require(dplyr)
-require(grid)
-require(gridExtra)
-require(gridGraphics)
-require(glmnet)
-require(caret)
-require(raster)
-require(maptools)
-require(ggmap)
-require(googleway)
-require(deldir)
-require(sp)
+library(jsonlite)
+library(curl)
+library(cluster)
+library(RColorBrewer)
+library(RgoogleMaps)
+library(reshape2)
+library(plyr)
+library(dplyr)
+library(grid)
+library(gridExtra)
+library(gridGraphics)
+library(glmnet)
+library(caret)
+library(raster)
+library(maptools)
+library(ggmap)
+library(googleway)
+library(deldir)
+library(sp)
 # devtools::install_github("rstudio/leaflet")
-require(leaflet)
-require(rgeos)
-require(tibble)
-require(crosstalk)
-require(viridis)
+library(leaflet)
+library(rgeos)
+library(tibble)
+library(crosstalk)
+library(viridis)
 
 
 
 #data (1 ligne par station) doit contenir les variables à afficher et la variable number
 #data doit contenir les variables à afficher et la variable number
 #stations doit contenir number, lat, lon, name
-#polygones doit être un SpatialPolygons
+#polygones doit être un SpatialPolygons (voronoi500)
 #var_polygone est la variable représentée (couleurs polygones), doit être dans data
 #var_point est pour colorer les points
 #lbl_var_polygone : libellé de la variable pour la légende
