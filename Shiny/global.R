@@ -2,11 +2,6 @@ library(shiny)
 library(rAmCharts)
 
 
-<<<<<<< HEAD
-=======
-
-
-
 #data doit contenir les variables à afficher et la variable number
 #stations doit contenir number, lat, lon, name
 #polygones doit être un SpatialPolygons
@@ -52,4 +47,3 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
     return(carte)
   } 
 }
->>>>>>> 59398c8ecb6add983b76b5679a10d3707e03e9d8
