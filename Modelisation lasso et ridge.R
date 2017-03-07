@@ -31,10 +31,12 @@ data$cluster<-as.factor(data$cluster)
 #lasso
 ########
 Xapp<-as.matrix(data[,-1])
+Xapp2<-scale(Xapp)
 Y<-data[,1]
 
 #on fait tourner le lasso
-lasso=cv.glmnet(Xapp,Y,family="multinomial",alpha=1)
+lasso=cv.glmnet(Xapp2,Y,family="multinomial",alpha=1)
+lambdachoisi=lasso$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(lasso)
@@ -47,21 +49,24 @@ for (i in 2:6)
 outend<-as.data.frame(as.matrix(out22))
 outend$X2<-1
 outend<-outend[order(outend[,1], decreasing=T),]
-barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
+barplot(outend[1:10,1], names.arg=row.names(outend)[1:10])
+
 
 #table de confusion
-Yprev<-predict(lasso, Xapp, type="class",s=lambdachoisi)
-confusion<-table(Yprev,Y)
-sommel<-apply(confusion, 2, sum)
-confusionlasso<-round(100*apply(confusion, MARGIN=1, sommel, FUN="/"),digits=0)
-confusionlasso
+Yprev<-predict(lasso, Xapp2, type="class",s=lambdachoisi)
 
+confusionlasso<-table(Y,Yprev)
+sommel<-apply(confusionlasso, 1, sum)
+confusionlasso2<-round(100*apply(confusionlasso, MARGIN=2, sommel, FUN="/"),digits=0)
+confusionlasso2
+# sum(diag(confusionlasso))/sum(confusionlasso)
 
 #ridge
 ########
 
 #on fait tourner le lasso
-ridge=cv.glmnet(Xapp,Y,family="multinomial",alpha=0)
+ridge=cv.glmnet(Xapp2,Y,family="multinomial",alpha=0)
+lambdachoisi=ridge$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(ridge)
@@ -69,26 +74,28 @@ out22<-abs(out2[[1]])
 for (i in 2:6)
 {
   out22<-out22+abs(out2[[i]])
-  
+
 }
 outend<-as.data.frame(as.matrix(out22))
 outend$X2<-1
 outend<-outend[order(outend[,1], decreasing=T),]
-barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
+barplot(outend[1:10,1], names.arg=row.names(outend)[1:10])
 
 
 #table de confusion
-Yprev<-predict(ridge, Xapp, type="class",s=lambdachoisi)
-confusion<-table(Yprev,Y)
-sommel<-apply(confusion, 2, sum)
-confusionridge<-round(100*apply(confusion, MARGIN=1, sommel, FUN="/"),digits=0)
-confusionridge
+Yprev<-predict(ridge, Xapp2, type="class",s=lambdachoisi)
+confusionridge<-table(Y,Yprev)
+sommel<-apply(confusionridge, 1, sum)
+confusionridge2<-round(100*apply(confusionridge, MARGIN=2, sommel, FUN="/"),digits=0)
+confusionridge2
+# sum(diag(confusionridge))/sum(confusionridge)
 
 #elasticnet
 ############
 
 #on fait tourner le lasso
-elasticnet=cv.glmnet(Xapp,Y,family="multinomial",alpha=0)
+elasticnet=cv.glmnet(Xapp2,Y,family="multinomial",alpha=0)
+lambdachoisi=elasticnet$lambda.1se
 
 #représentation des coefficients les plus importants
 out2<-coef(elasticnet)
@@ -101,14 +108,15 @@ for (i in 2:6)
 outend<-as.data.frame(as.matrix(out22))
 outend$X2<-1
 outend<-outend[order(outend[,1], decreasing=T),]
-barplot(outend[2:11,1], names.arg=row.names(outend)[2:11])
+barplot(outend[1:10,1], names.arg=row.names(outend)[1:10])
 
 
 #table de confusion
-Yprev<-predict(elasticnet, Xapp, type="class",s=lambdachoisi)
-confusionelasticnet<-table(Yprev,Y)
-sommel<-apply(confusion, 2, sum)
-confusionelasticnet<-round(100*apply(confusionridge, MARGIN=1, sommel, FUN="/"),digits=0)
-confusionelasticnet
+Yprev<-predict(elasticnet, Xapp2, type="class",s=lambdachoisi)
+confusionelasticnet<-table(Y,Yprev)
+sommel<-apply(confusion, 1, sum)
+confusionelasticnet2<-round(100*apply(confusionelasticnet, MARGIN=2, sommel, FUN="/"),digits=0)
+confusionelasticnet2
+# sum(diag(confusionelasticnet))/sum(confusionelasticnet)
 
 
