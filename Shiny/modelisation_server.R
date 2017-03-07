@@ -78,6 +78,7 @@ output$Ctableconfusion <- renderTable({
       else{
         X<-readRDS(file = "../Modeles/Xnonscale.RDS")
       }
+      Y <- readRDS(file = "../Modeles/Y.RDS")
       modele<-Cmodele()
       Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
       
@@ -103,6 +104,7 @@ output$Ctableconfusionp <- renderTable({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
+    Y <- readRDS(file = "../Modeles/Y.RDS")
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
     
@@ -153,7 +155,8 @@ output$Cdevlambda <- renderPlot({
       #représentation des coefficients les plus importants
       #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
       modele<-Cmodele()
-      plot(modele)
+      plot(modele, main="")
+      title("Mesure de deviance de Cross-Validation", line = +3)
     }
     #fin isolate
   })

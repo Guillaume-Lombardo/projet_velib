@@ -32,25 +32,44 @@ fluidRow(
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
-         tags$div( tags$h1(textOutput("Cmod1")) ), 
+         tags$div( tags$h1(textOutput("Cmod1")) , align="center"), 
+         hr(),
          
          #affiche les variables importantes quand c'est possible
          uiOutput( "Cafficheimportance"),
          
-         tags$h2("Tables de confusion et proportion de biens classés"),
+         br(),
          
-         column(width = 5,
-                #tableconfusion en nombre
-                tableOutput("Ctableconfusion")
-         ),
-         column(width = 5,
-                #tableconfusion en %
-                tableOutput("Ctableconfusionp")
-         ),
+         div(tags$h2("Tables de confusion et proportion de biens classés"),
+             br(),
+             
+             fluidRow(
+               
+               column(width = 5,
+                      fluidRow(
+                        #tableconfusion en nombre
+                        tags$h5("Tables de confusion en nombre"),
+                        br(),
+                        tableOutput("Ctableconfusion") 
+                      )
+               ), 
+               column(width = 5,
+                      fluidRow(
+                        #tableconfusion en %
+                        tags$h5("Tables de confusion en pourcentage"),
+                        br(),
+                        tableOutput("Ctableconfusionp")
+                      )
+               )
+             ),
+             align="center"),
+         br(), 
+         br(),
          
          #proportion de biens classés
-         textOutput("Cpourcentagebienclasse"), 
+         div(textOutput("Cpourcentagebienclasse"), align="center"), 
          
+         hr(),
          #affiche une mesure de deviance de CV 
          #en fonction de lambda pour lasso, ridge et elasticnet
          uiOutput( "Caffichedev")
