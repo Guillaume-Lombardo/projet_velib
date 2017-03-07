@@ -6,22 +6,30 @@ Cmodele <- reactive({
   if(!input$Cscale){
     scale<-0
   }
-  nommodele <- paste0(input$Ckmeans, input$Cselecmod,scale,".RDS")
-  #modele<-readRDS(file = nommodele)
-  #pur l'instant, on a un seul modèle en stock donc à modifier
+  nommodele <- paste0("../Modeles/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
+  if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")&&(input$Ckmeans %in% 5:6)){
+  modele<-readRDS(file = nommodele)
+  }
+  else
+  {
+  #pour l'instant, on n'a pas tous les modèles générés
   modele<-readRDS(file = "../Modeles/Lasso61.RDS")
+  }
   })
 })
 
 output$Cmod1 <- renderText({
-  paste0("Modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes")
-  #  tags$h1("Heading")
-
+  input$Cgo
+  isolate({
+    paste0("Modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes")
+    #  tags$h1("Heading")
   })
+})
 
 #le graphique qui va afficher le barplot de l'importance des variables dans le modèle
 output$CImpvarPlot <- renderAmCharts({
   input$Cgo
+  nvar<-input$Cnbvar
   isolate({
 
 
@@ -60,7 +68,7 @@ output$CImpvarPlot <- renderAmCharts({
 output$Cafficheimportance <- renderUI({
   input$Cgo
   isolate({
-    if (input$Cselecmod == "Lasso") {
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
       amChartsOutput("CImpvarPlot")
     }
     #fin isolate
@@ -78,13 +86,12 @@ output$Ctableconfusion <- renderTable({
       else{
         X<-readRDS(file = "../Modeles/Xnonscale.RDS")
       }
-      Y <- readRDS(file = "../Modeles/Y.RDS")
+      url<-paste0("../Modeles/Y",k,".RDS")
+      Y <- readRDS(file = url)
       modele<-Cmodele()
       Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
       
       confusion<-as.data.frame.matrix(table(Y,Yprev))
-      # sommel<-apply(confusion, 1, sum)
-      # confusion2<-round(100*apply(confusion, MARGIN=2, sommel, FUN="/"),digits=0)
       confusion
       #fin isolate
   }) 
@@ -104,7 +111,8 @@ output$Ctableconfusionp <- renderTable({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
-    Y <- readRDS(file = "../Modeles/Y.RDS")
+    url<-paste0("../Modeles/Y",k,".RDS")
+    Y <- readRDS(file = url)
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
     
@@ -130,12 +138,12 @@ output$Cpourcentagebienclasse <- renderText({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
-    Y <- readRDS(file = "../Modeles/Y.RDS")
+    url<-paste0("../Modeles/Y",k,".RDS")
+    Y <- readRDS(file = url)
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
     
     confusion<-as.data.frame.matrix(table(Y,Yprev))
-    #bienclasse <- 100* sum(diag(confusion))/sum(confusion)
     bienclasse<- round(100*sum(diag(as.matrix(confusion)))/sum(confusion),digits=2)
   }) 
   paste("Le pourcentage de bien classés", bienclasse, "%")
