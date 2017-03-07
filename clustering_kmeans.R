@@ -124,7 +124,7 @@ eval(parse(text = paste('profil_colonnes_',1:10,'$time <- pre_dates',sep = '')))
 eval(parse(text = paste('rownames(profil_colonnes_',1:10,') <- NULL',sep = '')))
 
 eval(parse(text = paste("write.table(x = profil_colonnes_",1:10,",",
-      "file = paste('./Sortie/profil_colonnes_',",1:10,",'.csv',sep = ''),",
+      "file = './Sortie/profil_colonnes_,",1:10,".csv',",
       "sep = ';',dec = ',',row.names = F)", sep = '')))
 write.table(x = stations_colonnes,
             file = paste('./Sortie/stations_colonnes.csv',sep = ''),
@@ -137,3 +137,9 @@ eval(parse(text = paste("profil_colonnes_",1:10,
                         1:10,".csv',",
                         "sep = ';',dec = ',',header = T,colClasses = c('time' = 'POSIXct'))",
                         sep = '')))
+
+saveRDS(object = representation_kmeans,file = './Sortie/representation_kmeans.RDS',compress = 'xz')
+saveRDS(object = stations_colonnes,file = './Sortie/stations_colonnes.RDS',compress = 'xz')
+eval(parse(text = paste("saveRDS(object = profil_colonnes_",1:10,",",
+                        "file = './Sortie/profil_colonnes_",1:10,".RDS',",
+                        "compress = 'xz')", sep = '')))
