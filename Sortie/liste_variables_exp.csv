@@ -1,0 +1,300 @@
+Variable;lbl
+P13_POP;Population en 2013 
+P13_POP0002;Pop 0-2 ans en 2013 
+P13_POP0305;Pop 3-5 ans en 2013 
+P13_POP0610;Pop 6-10 ans en 2013 
+P13_POP1117;Pop 11-17 ans en 2013 
+P13_POP1824;Pop 18-24 ans en 2013 
+P13_POP2539;Pop 25-39 ans en 2013 
+P13_POP4054;Pop 40-54 ans en 2013 
+P13_POP5564;Pop 55-64 ans en 2013 
+P13_POP6579;Pop 65-79 ans en 2013 
+P13_POP80P;Pop 80 ans ou plus en 2013 
+P13_POP0014;Pop 0-14 ans en 2013 
+P13_POP1529;Pop 15-29 ans en 2013 
+P13_POP3044;Pop 30-44 ans en 2013 
+P13_POP4559;Pop 45-59 ans en 2013 
+P13_POP6074;Pop 60-74 ans en 2013 
+P13_POP75P;Pop 75 ans ou plus en 2013 
+P13_POP0019;Pop 0-19 ans en 2013 
+P13_POP2064;Pop 20-64 ans en 2013 
+P13_POP65P;Pop 65 ans ou plus en 2013 
+P13_POPH;Pop Hommes en 2013 
+P13_H0014;Pop Hommes 0-14 ans en 2013 
+P13_H1529;Pop Hommes 15-29 ans en 2013 
+P13_H3044;Pop Hommes 30-44 ans en 2013 
+P13_H4559;Pop Hommes 45-59 ans en 2013 
+P13_H6074;Pop Hommes 60-74 ans en 2013 
+P13_H75P;Pop Hommes 75 ans ou plus en 2013 
+P13_H0019;Pop Hommes 0-19 ans en 2013 
+P13_H2064;Pop Hommes 20-64 ans en 2013 
+P13_H65P;Pop Hommes 65 ans ou plus en 2013 
+P13_POPF;Pop Femmes en 2013 
+P13_F0014;Pop Femmes 0-14 ans en 2013 
+P13_F1529;Pop Femmes 15-29 ans en 2013 
+P13_F3044;Pop Femmes 30-44 ans en 2013 
+P13_F4559;Pop Femmes 45-59 ans en 2013 
+P13_F6074;Pop Femmes 60-74 ans en 2013 
+P13_F75P;Pop Femmes 75 ans ou plus en 2013 
+P13_F0019;Pop Femmes 0-19 ans en 2013 
+P13_F2064;Pop Femmes 20-64 ans en 2013 
+P13_F65P;Pop Femmes 65 ans ou plus en 2013 
+C13_POP15P;Pop 15 ans ou plus en 2013 
+C13_POP15P_CS1;Pop 15 ans ou plus Agriculteurs exploitants en 2013 
+C13_POP15P_CS2;Pop 15 ans ou plus Artisans, Comm., Chefs entr. en 2013 
+C13_POP15P_CS3;Pop 15 ans ou plus Cadres, Prof. intel. sup. en 2013 
+C13_POP15P_CS4;Pop 15 ans ou plus Prof. intermédiaires en 2013 
+C13_POP15P_CS5;Pop 15 ans ou plus Employés en 2013 
+C13_POP15P_CS6;Pop 15 ans ou plus Ouvriers en 2013 
+C13_POP15P_CS7;Pop 15 ans ou plus Retraités en 2013 
+C13_POP15P_CS8;Pop 15 ans ou plus Autres en 2013 
+C13_H15P;Pop 15 ans ou plus Hommes en 2013 
+C13_H15P_CS1;Pop 15 ans ou plus Hommes Agriculteurs exploitants en 2013 
+C13_H15P_CS2;Pop 15 ans ou plus Hommes Artisans, Comm., Chefs entr. en 2013 
+C13_H15P_CS3;Pop 15 ans ou plus Hommes Cadres, Prof. intel. sup. en 2013 
+C13_H15P_CS4;Pop 15 ans ou plus Hommes Prof. intermédiaires en 2013 
+C13_H15P_CS5;Pop 15 ans ou plus Hommes Employés en 2013 
+C13_H15P_CS6;Pop 15 ans ou plus Hommes Ouvriers en 2013 
+C13_H15P_CS7;Pop 15 ans ou plus Hommes Retraités en 2013 
+C13_H15P_CS8;Pop 15 ans ou plus Hommes Autres en 2013 
+C13_F15P;Pop 15 ans ou plus Femmes en 2013 
+C13_F15P_CS1;Pop 15 ans ou plus Femmes Agriculteurs exploitants en 2013 
+C13_F15P_CS2;Pop 15 ans ou plus Femmes Artisans, Comm., Chefs entr. en 2013 
+C13_F15P_CS3;Pop 15 ans ou plus Femmes Cadres, Prof. intel. sup. en 2013 
+C13_F15P_CS4;Pop 15 ans ou plus Femmes Prof. intermédiaires en 2013 
+C13_F15P_CS5;Pop 15 ans ou plus Femmes Employés en 2013 
+C13_F15P_CS6;Pop 15 ans ou plus Femmes Ouvriers en 2013 
+C13_F15P_CS7;Pop 15 ans ou plus Femmes Retraités en 2013 
+C13_F15P_CS8;Pop 15 ans ou plus Femmes Autres en 2013 
+P13_POP_FR;Pop Français en 2013 
+P13_POP_ETR;Pop Etrangers en 2013 
+P13_POP_IMM;Pop Immigrés en 2013 
+P13_PMEN;Pop ménages en 2013 
+P13_PHORMEN;Pop hors ménages en 2013 
+nombre;Nombre d'établissements
+effectif;Effectifs salariés
+eff_00;Effectifs salariés - Inconnu
+eff_01;Effectifs salariés - Culture et production animale, chasse et services annexes
+eff_02;Effectifs salariés - Sylviculture et exploitation forestière
+eff_03;Effectifs salariés - Pêche et aquaculture
+eff_05;Effectifs salariés - Extraction de houille et de lignite
+eff_06;Effectifs salariés - Extraction d'hydrocarbures
+eff_07;Effectifs salariés - Extraction de minerais métalliques
+eff_08;Effectifs salariés - Autres industries extractives
+eff_09;Effectifs salariés - Services de soutien aux industries extractives
+eff_10;Effectifs salariés - Industries alimentaires
+eff_11;Effectifs salariés - Fabrication de boissons
+eff_12;Effectifs salariés - Fabrication de produits à base de tabac
+eff_13;Effectifs salariés - Fabrication de textiles
+eff_14;Effectifs salariés - Industrie de l'habillement
+eff_15;Effectifs salariés - Industrie du cuir et de la chaussure
+eff_16;"Effectifs salariés - Travail du bois et fabrication d'articles en bois et en liège, à l'exception des meubles ; fabrication d'articles en vannerie et sparterie"
+eff_17;Effectifs salariés - Industrie du papier et du carton
+eff_18;Effectifs salariés - Imprimerie et reproduction d'enregistrements
+eff_19;Effectifs salariés - Cokéfaction et raffinage
+eff_20;Effectifs salariés - Industrie chimique
+eff_21;Effectifs salariés - Industrie pharmaceutique
+eff_22;Effectifs salariés - Fabrication de produits en caoutchouc et en plastique
+eff_23;Effectifs salariés - Fabrication d'autres produits minéraux non métalliques
+eff_24;Effectifs salariés - Métallurgie
+eff_25;Effectifs salariés - Fabrication de produits métalliques, à l'exception des machines et des équipements
+eff_26;Effectifs salariés - Fabrication de produits informatiques, électroniques et optiques
+eff_27;Effectifs salariés - Fabrication d'équipements électriques
+eff_28;Effectifs salariés - Fabrication de machines et équipements n.c.a.
+eff_29;Effectifs salariés - Industrie automobile
+eff_30;Effectifs salariés - Fabrication d'autres matériels de transport
+eff_31;Effectifs salariés - Fabrication de meubles
+eff_32;Effectifs salariés - Autres industries manufacturières
+eff_33;Effectifs salariés - Réparation et installation de machines et d'équipements
+eff_35;Effectifs salariés - Production et distribution d'électricité, de gaz, de vapeur et d'air conditionné
+eff_36;Effectifs salariés - Captage, traitement et distribution d'eau
+eff_37;Effectifs salariés - Collecte et traitement des eaux usées
+eff_38;"Effectifs salariés - Collecte, traitement et élimination des déchets ; récupération"
+eff_39;Effectifs salariés - Dépollution et autres services de gestion des déchets
+eff_41;Effectifs salariés - Construction de bƒtiments
+eff_42;Effectifs salariés - Génie civil
+eff_43;Effectifs salariés - Travaux de construction spécialisés
+eff_45;Effectifs salariés - Commerce et réparation d'automobiles et de motocycles
+eff_46;Effectifs salariés - Commerce de gros, à l'exception des automobiles et des motocycles
+eff_47;Effectifs salariés - Commerce de détail, à l'exception des automobiles et des motocycles
+eff_49;Effectifs salariés - Transports terrestres et transport par conduites
+eff_50;Effectifs salariés - Transports par eau
+eff_51;Effectifs salariés - Transports aériens
+eff_52;Effectifs salariés - Entreposage et services auxiliaires des transports
+eff_53;Effectifs salariés - Activités de poste et de courrier
+eff_55;Effectifs salariés - Hébergement
+eff_56;Effectifs salariés - Restauration
+eff_58;Effectifs salariés - Edition
+eff_59;"Effectifs salariés - Production de films cinématographiques, de vidéo et de programmes de télévision ; enregistrement sonore et édition musicale"
+eff_60;Effectifs salariés - Programmation et diffusion
+eff_61;Effectifs salariés - Télécommunications
+eff_62;Effectifs salariés - Programmation, conseil et autres activités informatiques
+eff_63;Effectifs salariés - Services d'information
+eff_64;Effectifs salariés - Activités des services financiers, hors assurance et caisses de retraite
+eff_65;Effectifs salariés - Assurance
+eff_66;Effectifs salariés - Activités auxiliaires de services financiers et d'assurance
+eff_68;Effectifs salariés - Activités immobilières
+eff_69;Effectifs salariés - Activités juridiques et comptables
+eff_70;"Effectifs salariés - Activités des sièges sociaux ; conseil de gestion"
+eff_71;"Effectifs salariés - Activités d'architecture et d'ingénierie ; activités de contr“le et analyses techniques"
+eff_72;Effectifs salariés - Recherche-développement scientifique
+eff_73;Effectifs salariés - Publicité et études de marché
+eff_74;Effectifs salariés - Autres activités spécialisées, scientifiques et techniques
+eff_75;Effectifs salariés - Activités vétérinaires
+eff_77;Effectifs salariés - Activités de location et location-bail
+eff_78;Effectifs salariés - Activités liées à l'emploi
+eff_79;Effectifs salariés - Activités des agences de voyage, voyagistes, services de réservation et activités connexes
+eff_80;Effectifs salariés - Enquêtes et sécurité
+eff_81;Effectifs salariés - Services relatifs aux bƒtiments et aménagement paysager
+eff_82;Effectifs salariés - Activités administratives et autres activités de soutien aux entreprises
+eff_84;"Effectifs salariés - Administration publique et défense ; sécurité sociale obligatoire"
+eff_85;Effectifs salariés - Enseignement
+eff_86;Effectifs salariés - Activités pour la santé humaine
+eff_87;Effectifs salariés - Hébergement médico-social et social
+eff_88;Effectifs salariés - Action sociale sans hébergement
+eff_90;Effectifs salariés - Activités créatives, artistiques et de spectacle
+eff_91;Effectifs salariés - Bibliothèques, archives, musées et autres activités culturelles
+eff_92;Effectifs salariés - Organisation de jeux de hasard et d'argent
+eff_93;Effectifs salariés - Activités sportives, récréatives et de loisirs
+eff_94;Effectifs salariés - Activités des organisations associatives
+eff_95;Effectifs salariés - Réparation d'ordinateurs et de biens personnels et domestiques
+eff_96;Effectifs salariés - Autres services personnels
+eff_99;Effectifs salariés - Activités des organisations et organismes extraterritoriaux
+nb_00;Nombre d'établissements - Inconnu
+nb_01;Nombre d'établissements - Culture et production animale, chasse et services annexes
+nb_02;Nombre d'établissements - Sylviculture et exploitation forestière
+nb_03;Nombre d'établissements - Pêche et aquaculture
+nb_05;Nombre d'établissements - Extraction de houille et de lignite
+nb_06;Nombre d'établissements - Extraction d'hydrocarbures
+nb_07;Nombre d'établissements - Extraction de minerais métalliques
+nb_08;Nombre d'établissements - Autres industries extractives
+nb_09;Nombre d'établissements - Services de soutien aux industries extractives
+nb_10;Nombre d'établissements - Industries alimentaires
+nb_11;Nombre d'établissements - Fabrication de boissons
+nb_12;Nombre d'établissements - Fabrication de produits à base de tabac
+nb_13;Nombre d'établissements - Fabrication de textiles
+nb_14;Nombre d'établissements - Industrie de l'habillement
+nb_15;Nombre d'établissements - Industrie du cuir et de la chaussure
+nb_16;"Nombre d'établissements - Travail du bois et fabrication d'articles en bois et en liège, à l'exception des meubles ; fabrication d'articles en vannerie et sparterie"
+nb_17;Nombre d'établissements - Industrie du papier et du carton
+nb_18;Nombre d'établissements - Imprimerie et reproduction d'enregistrements
+nb_19;Nombre d'établissements - Cokéfaction et raffinage
+nb_20;Nombre d'établissements - Industrie chimique
+nb_21;Nombre d'établissements - Industrie pharmaceutique
+nb_22;Nombre d'établissements - Fabrication de produits en caoutchouc et en plastique
+nb_23;Nombre d'établissements - Fabrication d'autres produits minéraux non métalliques
+nb_24;Nombre d'établissements - Métallurgie
+nb_25;Nombre d'établissements - Fabrication de produits métalliques, à l'exception des machines et des équipements
+nb_26;Nombre d'établissements - Fabrication de produits informatiques, électroniques et optiques
+nb_27;Nombre d'établissements - Fabrication d'équipements électriques
+nb_28;Nombre d'établissements - Fabrication de machines et équipements n.c.a.
+nb_29;Nombre d'établissements - Industrie automobile
+nb_30;Nombre d'établissements - Fabrication d'autres matériels de transport
+nb_31;Nombre d'établissements - Fabrication de meubles
+nb_32;Nombre d'établissements - Autres industries manufacturières
+nb_33;Nombre d'établissements - Réparation et installation de machines et d'équipements
+nb_35;Nombre d'établissements - Production et distribution d'électricité, de gaz, de vapeur et d'air conditionné
+nb_36;Nombre d'établissements - Captage, traitement et distribution d'eau
+nb_37;Nombre d'établissements - Collecte et traitement des eaux usées
+nb_38;"Nombre d'établissements - Collecte, traitement et élimination des déchets ; récupération"
+nb_39;Nombre d'établissements - Dépollution et autres services de gestion des déchets
+nb_41;Nombre d'établissements - Construction de bƒtiments
+nb_42;Nombre d'établissements - Génie civil
+nb_43;Nombre d'établissements - Travaux de construction spécialisés
+nb_45;Nombre d'établissements - Commerce et réparation d'automobiles et de motocycles
+nb_46;Nombre d'établissements - Commerce de gros, à l'exception des automobiles et des motocycles
+nb_47;Nombre d'établissements - Commerce de détail, à l'exception des automobiles et des motocycles
+nb_49;Nombre d'établissements - Transports terrestres et transport par conduites
+nb_50;Nombre d'établissements - Transports par eau
+nb_51;Nombre d'établissements - Transports aériens
+nb_52;Nombre d'établissements - Entreposage et services auxiliaires des transports
+nb_53;Nombre d'établissements - Activités de poste et de courrier
+nb_55;Nombre d'établissements - Hébergement
+nb_56;Nombre d'établissements - Restauration
+nb_58;Nombre d'établissements - Edition
+nb_59;"Nombre d'établissements - Production de films cinématographiques, de vidéo et de programmes de télévision ; enregistrement sonore et édition musicale"
+nb_60;Nombre d'établissements - Programmation et diffusion
+nb_61;Nombre d'établissements - Télécommunications
+nb_62;Nombre d'établissements - Programmation, conseil et autres activités informatiques
+nb_63;Nombre d'établissements - Services d'information
+nb_64;Nombre d'établissements - Activités des services financiers, hors assurance et caisses de retraite
+nb_65;Nombre d'établissements - Assurance
+nb_66;Nombre d'établissements - Activités auxiliaires de services financiers et d'assurance
+nb_68;Nombre d'établissements - Activités immobilières
+nb_69;Nombre d'établissements - Activités juridiques et comptables
+nb_70;"Nombre d'établissements - Activités des sièges sociaux ; conseil de gestion"
+nb_71;"Nombre d'établissements - Activités d'architecture et d'ingénierie ; activités de contr“le et analyses techniques"
+nb_72;Nombre d'établissements - Recherche-développement scientifique
+nb_73;Nombre d'établissements - Publicité et études de marché
+nb_74;Nombre d'établissements - Autres activités spécialisées, scientifiques et techniques
+nb_75;Nombre d'établissements - Activités vétérinaires
+nb_77;Nombre d'établissements - Activités de location et location-bail
+nb_78;Nombre d'établissements - Activités liées à l'emploi
+nb_79;Nombre d'établissements - Activités des agences de voyage, voyagistes, services de réservation et activités connexes
+nb_80;Nombre d'établissements - Enquêtes et sécurité
+nb_81;Nombre d'établissements - Services relatifs aux bƒtiments et aménagement paysager
+nb_82;Nombre d'établissements - Activités administratives et autres activités de soutien aux entreprises
+nb_84;"Nombre d'établissements - Administration publique et défense ; sécurité sociale obligatoire"
+nb_85;Nombre d'établissements - Enseignement
+nb_86;Nombre d'établissements - Activités pour la santé humaine
+nb_87;Nombre d'établissements - Hébergement médico-social et social
+nb_88;Nombre d'établissements - Action sociale sans hébergement
+nb_90;Nombre d'établissements - Activités créatives, artistiques et de spectacle
+nb_91;Nombre d'établissements - Bibliothèques, archives, musées et autres activités culturelles
+nb_92;Nombre d'établissements - Organisation de jeux de hasard et d'argent
+nb_93;Nombre d'établissements - Activités sportives, récréatives et de loisirs
+nb_94;Nombre d'établissements - Activités des organisations associatives
+nb_95;Nombre d'établissements - Réparation d'ordinateurs et de biens personnels et domestiques
+nb_96;Nombre d'établissements - Autres services personnels
+nb_99;Nombre d'établissements - Activités des organisations et organismes extraterritoriaux
+bonus;Bonus Vélib
+bike_stands;Taille de la station (nombre de bornes)
+lat;Latitude
+lon;Longitude
+alt;Altitude
+nbstand200;Nombre de bornes  à moins de 200m de la station
+nbstand500;Nombre de bornes  à moins de 500m de la station
+nbstand1000;Nombre de bornes  à moins de 1000m de la station
+hr5;Altitude relative par rapport aux 5 plus proches voisins
+hr10;Altitude relative par rapport aux 10 plus proches voisins
+distcentre;Distance au centre de Paris v1
+distcentre2;Distance au centre de Paris v2
+RATP;Distance à l'équipement le plus proche - station de métro/RER/tram
+A;Distance à l'équipement le plus proche - services
+B;Distance à l'équipement le plus proche - commerces
+B1;Distance à l'équipement le plus proche - grandes surfaces
+C1;Distance à l'équipement le plus proche - écoles
+C2;Distance à l'équipement le plus proche - collège
+C3;Distance à l'équipement le plus proche - Lycées
+C4;Distance à l'équipement le plus proche - Formations post bac non universitaire
+C5;Distance à l'équipement le plus proche - Enseignement supérieur
+C6;Distance à l'équipement le plus proche - Autres formations
+C7;Distance à l'équipement le plus proche - résidence et restau U
+D;Distance à l'équipement le plus proche - Soin et social
+D1;Distance à l'équipement le plus proche - Hopitaux et assimilés
+E1;Distance à l'équipement le plus proche - Taxis
+F1;Distance à l'équipement le plus proche - Sport
+F2;Distance à l'équipement le plus proche - Nautique
+F3;Distance à l'équipement le plus proche - Culture (Ciné théatre musées)
+Ga;Distance à l'équipement le plus proche - Hotels et campings
+Gb;Distance à l'équipement le plus proche - Equipement pour tourisme
+exp.RATP;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - station de métro/RER/tram
+exp.A;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - services
+exp.B;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - commerces
+exp.B1;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - grandes surfaces
+exp.C1;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - écoles
+exp.C2;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - collège
+exp.C3;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Lycées
+exp.C4;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Formations post bac non universitaire
+exp.C5;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Enseignement supérieur
+exp.C6;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Autres formations
+exp.C7;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - résidence et restau U
+exp.D;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Soin et social
+exp.D1;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Hopitaux et assimilés
+exp.E1;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Taxis
+exp.F1;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Sport
+exp.F2;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Nautique
+exp.F3;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Culture (Ciné théatre musées)
+exp.Ga;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Hotels et campings
+exp.Gb;Distance à l'équipement le plus proche (transformé exp(-distance²/sigma)) - Equipement pour tourisme
+aire;Aire de la zone d'influence

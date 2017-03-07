@@ -18,6 +18,7 @@ library(rgeos)
 library(tibble)
 library(crosstalk)
 library(viridis)
+library(highcharter)
 
 #### gestion des polygones
 #### 4 versions : voronoi100, voronoi500, cercle100, cercle500
@@ -412,38 +413,40 @@ voronoi100@polygons[[i]]@ID <- voronoi@polygons[[i]]@ID
 # 
 # write.csv(stations_population_cercle100,file="C:/Users/tix/Desktop/stations_population_cercle100.csv")
 
-stations_sirene_voronoi500 <- read.csv("E:/Data/stations_sirene_voronoi500.csv")[,-1]
-stations_sirene_voronoi100 <- read.csv("E:/Data/stations_sirene_voronoi100.csv")[,-1]
-stations_sirene_cercle500 <- read.csv("E:/Data/stations_sirene_cercle500.csv")[,-1]
-stations_sirene_cercle500 <- merge(stations,stations_sirene_cercle500)
-stations_sirene_cercle100 <- read.csv("E:/Data/stations_sirene_cercle100.csv")[,-1]
-stations_sirene_cercle100 <- merge(stations,stations_sirene_cercle100,all=T)
-stations_sirene_cercle100[,][is.na(stations_sirene_cercle100[,])] <- 0
-stations_population_voronoi500 <- read.csv("E:/Data/stations_population_voronoi500.csv")[,-1]
-stations_population_voronoi500 <- merge(stations,stations_population_voronoi500)
-stations_population_voronoi100 <- read.csv("E:/Data/stations_population_voronoi100.csv")[,-1]
-stations_population_voronoi100 <- merge(stations,stations_population_voronoi100)
-stations_population_cercle500 <- read.csv("E:/Data/stations_population_cercle500.csv")[,-1]
-stations_population_cercle500 <- merge(stations,stations_population_cercle500)
-stations_population_cercle100 <- read.csv("E:/Data/stations_population_cercle100.csv")[,-1]
-stations_population_cercle100 <- merge(stations,stations_population_cercle100)
+# stations_sirene_voronoi500 <- read.csv("E:/Data/stations_sirene_voronoi500.csv")[,-1]
+# stations_sirene_voronoi100 <- read.csv("E:/Data/stations_sirene_voronoi100.csv")[,-1]
+# stations_sirene_cercle500 <- read.csv("E:/Data/stations_sirene_cercle500.csv")[,-1]
+# stations_sirene_cercle500 <- merge(stations,stations_sirene_cercle500)
+# stations_sirene_cercle100 <- read.csv("E:/Data/stations_sirene_cercle100.csv")[,-1]
+# stations_sirene_cercle100 <- merge(stations,stations_sirene_cercle100,all=T)
+# stations_sirene_cercle100[,][is.na(stations_sirene_cercle100[,])] <- 0
+# stations_population_voronoi500 <- read.csv("E:/Data/stations_population_voronoi500.csv")[,-1]
+# stations_population_voronoi500 <- merge(stations,stations_population_voronoi500)
+# stations_population_voronoi100 <- read.csv("E:/Data/stations_population_voronoi100.csv")[,-1]
+# stations_population_voronoi100 <- merge(stations,stations_population_voronoi100)
+# stations_population_cercle500 <- read.csv("E:/Data/stations_population_cercle500.csv")[,-1]
+# stations_population_cercle500 <- merge(stations,stations_population_cercle500)
+# stations_population_cercle100 <- read.csv("E:/Data/stations_population_cercle100.csv")[,-1]
+# stations_population_cercle100 <- merge(stations,stations_population_cercle100)
+# 
+# voronoi500_aires <- unlist(lapply(voronoi500@polygons, function(x){x@area}))
+# tmp_id <- unlist(lapply(voronoi500@polygons, function(x){x@ID}))
+# voronoi500_aires <- as.data.frame(cbind(voronoi500_aires,tmp_id))
+# colnames(voronoi500_aires) <- c("aire","number")
+# voronoi500_aires$aire <- 
+#   as.numeric(levels(voronoi500_aires$aire))[voronoi500_aires$aire]  * pi * 0.1 * 0.1 / 3.766366e-06
+# stations_sirene_voronoi500_densite <- merge(voronoi500_aires,stations_sirene_voronoi500)
+# stations_sirene_voronoi500_densite <- stations_sirene_voronoi500_densite[,7:ncol(stations_sirene_voronoi500_densite)] / 
+#   (stations_sirene_voronoi500_densite$aire)
+# stations_sirene_voronoi500_densite <- cbind(voronoi500_aires, stations_sirene_voronoi500_densite)
+# 
+# stations_population_voronoi500_densite <- merge(voronoi500_aires,stations_population_voronoi500)
+# stations_population_voronoi500_densite <- stations_population_voronoi500_densite[,7:ncol(stations_population_voronoi500_densite)] / 
+#   (stations_population_voronoi500_densite$aire)
+# stations_population_voronoi500_densite <- cbind(voronoi500_aires, stations_population_voronoi500_densite)
+# 
+# write.csv(stations_population_voronoi500_densite,file="E:/Data/stations_population_voronoi500_densite.csv")
+# write.csv(stations_population_voronoi500_densite,file="E:/Data/stations_sirene_voronoi500_densite.csv")
 
-voronoi500_aires <- unlist(lapply(voronoi500@polygons, function(x){x@area}))
-tmp_id <- unlist(lapply(voronoi500@polygons, function(x){x@ID}))
-voronoi500_aires <- as.data.frame(cbind(voronoi500_aires,tmp_id))
-colnames(voronoi500_aires) <- c("aire","number")
-voronoi500_aires$aire <- 
-  as.numeric(levels(voronoi500_aires$aire))[voronoi500_aires$aire]  * pi * 0.1 * 0.1 / 3.766366e-06
-stations_sirene_voronoi500_densite <- merge(voronoi500_aires,stations_sirene_voronoi500)
-stations_sirene_voronoi500_densite <- stations_sirene_voronoi500_densite[,7:ncol(stations_sirene_voronoi500_densite)] / 
-  (stations_sirene_voronoi500_densite$aire)
-stations_sirene_voronoi500_densite <- cbind(voronoi500_aires, stations_sirene_voronoi500_densite)
-
-stations_population_voronoi500_densite <- merge(voronoi500_aires,stations_population_voronoi500)
-stations_population_voronoi500_densite <- stations_population_voronoi500_densite[,7:ncol(stations_population_voronoi500_densite)] / 
-  (stations_population_voronoi500_densite$aire)
-stations_population_voronoi500_densite <- cbind(voronoi500_aires, stations_population_voronoi500_densite)
-
-write.csv(stations_population_voronoi500_densite,file="E:/Data/stations_population_voronoi500_densite.csv")
-write.csv(stations_population_voronoi500_densite,file="E:/Data/stations_sirene_voronoi500_densite.csv")
-
+stations_population_voronoi500_densite <- read.csv(file="E:/Data/stations_population_voronoi500_densite.csv")
+stations_population_voronoi500 <- read.csv(file="E:/Data/stations_population_voronoi500.csv")

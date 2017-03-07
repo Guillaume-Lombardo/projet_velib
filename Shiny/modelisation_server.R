@@ -13,7 +13,7 @@ Cmodele <- reactive({
   })
 })
 
-output$mod1 <- renderText({
+output$Cmod1 <- renderText({
    paste("Un bien beau modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes ")
   })
 
@@ -65,13 +65,75 @@ output$Cafficheimportance <- renderUI({
 })
 
 
+#table de confusion en nombre
+output$Ctableconfusion <- renderTable({
+  input$Cgo
+  isolate({
+      if(input$Cscale){
+        X<-readRDS(file = "../Modeles/Xscale.RDS")
+      }
+      else{
+        X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+      }
+      modele<-Cmodele()
+      Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
+      
+      confusion<-as.data.frame.matrix(table(Y,Yprev))
+      # sommel<-apply(confusion, 1, sum)
+      # confusion2<-round(100*apply(confusion, MARGIN=2, sommel, FUN="/"),digits=0)
+      confusion
+      #fin isolate
+  }) 
 
+},
+rownames=T,
+colnames=T
+)
 
+#table de confusion en nombre en %
+output$Ctableconfusionp <- renderTable({
+  input$Cgo
+  isolate({
+    if(input$Cscale){
+      X<-readRDS(file = "../Modeles/Xscale.RDS")
+    }
+    else{
+      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+    }
+    modele<-Cmodele()
+    Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
+    
+    confusion<-as.data.frame.matrix(table(Y,Yprev))
+    sommel<-apply(confusion, 1, sum)
+    confusion<-round(100*apply(confusion, MARGIN=2, sommel, FUN="/"),digits=0)
+    confusion
+    #fin isolate
+  }) 
+  
+},
+rownames=T,
+colnames=T, 
+digits=0
+)
 
-
-
-
-
+output$Cpourcentagebienclasse <- renderText({
+  input$Cgo
+  isolate({
+    if(input$Cscale){
+      X<-readRDS(file = "../Modeles/Xscale.RDS")
+    }
+    else{
+      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+    }
+    modele<-Cmodele()
+    Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
+    
+    confusion<-as.data.frame.matrix(table(Y,Yprev))
+    #bienclasse <- 100* sum(diag(confusion))/sum(confusion)
+    bienclasse<- round(100*sum(diag(as.matrix(confusion)))/sum(confusion),digits=2)
+  }) 
+  paste("Le pourcentage de bien classés", bienclasse, "%")
+})
 
 
 # output$CdistPlot2 <- renderAmCharts({
