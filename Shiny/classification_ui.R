@@ -20,7 +20,7 @@ fluidRow(
          # deuxieme colonne avec les sortiesw
          column(width = 8, 
                 
-                textOutput("mod1")
+                textOutput("amod1")
                 
          )
   )
