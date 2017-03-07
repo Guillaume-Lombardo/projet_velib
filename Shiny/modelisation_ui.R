@@ -19,30 +19,61 @@ fluidRow(
            #                         "Random Forest" = 4, "SVM"=5)),
            
            # #Proposition de centrer-réduire les variables
-           checkboxInput(inputId = "Cscale", label = "Centrer-réduire ?"),
-
+           checkboxInput(inputId = "Cscale", label = "Centrer-réduire ?", value=T),
+           
+           #nombre de variables à afficher
+           numericInput(inputId="Cnbvar", label="Nombre de variables explicatives à afficher", value=10, min = 1),
+           
            # #action boutton pour lancer le calcul
            actionButton(inputId="Cgo", "Go !")
-  )),
+           
+           
+         )),
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
-         textOutput("Cmod1"),
+         tags$div( tags$h1(textOutput("Cmod1")) , align="center"), 
+         hr(),
          
-          uiOutput( "Cafficheimportance"),
+         #affiche les variables importantes quand c'est possible
+         uiOutput( "Cafficheimportance"),
          
-         #tableconfusion en nombre
-         tableOutput("Ctableconfusion"),
+         br(),
          
-         #tableconfusion en %
-         tableOutput("Ctableconfusionp"),
+         div(tags$h2("Tables de confusion et proportion de biens classés"),
+             br(),
+             
+             fluidRow(
+               
+               column(width = 5,
+                      fluidRow(
+                        #tableconfusion en nombre
+                        tags$h5("Tables de confusion en nombre"),
+                        br(),
+                        tableOutput("Ctableconfusion") 
+                      )
+               ), 
+               column(width = 5,
+                      fluidRow(
+                        #tableconfusion en %
+                        tags$h5("Tables de confusion en pourcentage"),
+                        br(),
+                        tableOutput("Ctableconfusionp")
+                      )
+               )
+             ),
+             align="center"),
+         br(), 
+         br(),
          
-         textOutput("Cpourcentagebienclasse")
+         #proportion de biens classés
+         div(textOutput("Cpourcentagebienclasse"), align="center"), 
          
-         
-         # ,
-         # amChartsOutput("CdistPlot2")
+         hr(),
+         #affiche une mesure de deviance de CV 
+         #en fonction de lambda pour lasso, ridge et elasticnet
+         uiOutput( "Caffichedev")
          
   )
-  )
+)
 

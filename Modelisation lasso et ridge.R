@@ -35,10 +35,12 @@ Xapp<-as.matrix(data[,-1])
 Xapp2<-scale(Xapp)
 #saveRDS(Xapp2, file = "Modeles/Xscale.RDS")
 Y<-data[,1]
+#saveRDS(Y, file = "Modeles/Y.RDS")
 
 #on fait tourner le lasso
 lasso=cv.glmnet(Xapp2,Y,family="multinomial",alpha=1)
 lambdachoisi=lasso$lambda.1se
+
 
 #représentation des coefficients les plus importants
 out2<-coef(lasso)
