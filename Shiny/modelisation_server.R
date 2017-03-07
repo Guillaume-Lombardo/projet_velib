@@ -182,4 +182,22 @@ output$Caffichedev <- renderUI({
 })
 
 
+#affiche la carte des stations mal classées
+# output$C_map <- renderLeaflet({
+#   input$Cgo
+#   isolate({
+#     X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+#     url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
+#     Y <- readRDS(file = url) 
+#     Y <- as.data.frame(cbind(X[,1],Y))
+#     names(Y)[1]<-"number"
+#     afficher_carte(data=Y, 
+#                    polygones=voronoi500,
+#                    stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+#                    var_polygone="Y",
+#                    lbl_var_polygone="cluster initial")
+#   })
+# })
+
+
 
