@@ -27,9 +27,18 @@ fluidRow(
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
-         textOutput("mod1"),
+         textOutput("Cmod1"),
          
-          uiOutput( "Cafficheimportance")
+          uiOutput( "Cafficheimportance"),
+         
+         #tableconfusion en nombre
+         tableOutput("Ctableconfusion"),
+         
+         #tableconfusion en %
+         tableOutput("Ctableconfusionp"),
+         
+         textOutput("Cpourcentagebienclasse")
+         
          
          # ,
          # amChartsOutput("CdistPlot2")

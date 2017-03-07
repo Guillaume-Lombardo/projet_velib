@@ -31,7 +31,9 @@ data$cluster<-as.factor(data$cluster)
 #lasso
 ########
 Xapp<-as.matrix(data[,-1])
+#saveRDS(Xapp, file = "Modeles/Xnonscale.RDS")
 Xapp2<-scale(Xapp)
+#saveRDS(Xapp2, file = "Modeles/Xscale.RDS")
 Y<-data[,1]
 
 #on fait tourner le lasso
@@ -47,15 +49,17 @@ for (i in 2:6)
   
 }
 outend<-as.data.frame(as.matrix(out22))
-outend$X2<-1
+outend$X2<-row.names(outend)
 outend<-outend[order(outend[,1], decreasing=T),]
 barplot(outend[1:10,1], names.arg=row.names(outend)[1:10])
+
+amBarplot(x="X2", y="1", data=outend[1:10,])
 
 
 #table de confusion
 Yprev<-predict(lasso, Xapp2, type="class",s=lambdachoisi)
 
-confusionlasso<-table(Y,Yprev)
+confusionlasso<-as.data.frame.matrix(table(Y,Yprev))
 sommel<-apply(confusionlasso, 1, sum)
 confusionlasso2<-round(100*apply(confusionlasso, MARGIN=2, sommel, FUN="/"),digits=0)
 confusionlasso2
