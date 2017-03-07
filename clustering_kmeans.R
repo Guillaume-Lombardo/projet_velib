@@ -7,6 +7,9 @@ representation_kmeans <- lapply(1:10,function(.x) merge(data.frame(number = stat
 																																	 station_x_date_mod7j[,-1]), 
 																												stations_gps, by="number", all.x=F))
 
+center <- c(mean(range(representation_kmeans[[2]][,'lat'])),mean(range(representation_kmeans[[2]][,'lon'])))
+zoom <- MaxZoom(range(representation_kmeans[[2]][,'lat'])*1,range(representation_kmeans[[2]][,'lon'])*1 )
+carte <- GetMap(center=center, zoom=zoom)
 ### representation graphique des kmeans en fonction du nombre de groupe (stocker dans map_plot_i_cluster)
 # tracer le graphique grid a : grid.draw(a)
 for(i in 2:10){

@@ -52,8 +52,8 @@ output$Adetail_classe <- renderAmCharts({
 })
 
 output$A_map2 <- renderLeaflet({
-  data_carte <- representation_kmeans[[2]][,c('number','cluster')]
-  data_carte$couleur_poly <- data_carte$cluster 
+  data_carte <- representation_kmeans[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+  data_carte$couleur_poly <- data_carte$cluster #brewer.pal(10, 'Paired')[data_carte$cluster]
   voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
   																									 function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
   afficher_carte(data=data_carte,
