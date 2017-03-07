@@ -128,6 +128,7 @@ output$Cpourcentagebienclasse <- renderText({
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }
+    Y <- readRDS(file = "../Modeles/Y.RDS")
     modele<-Cmodele()
     Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
     
