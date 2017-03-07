@@ -11,7 +11,7 @@ fluidRow(
            
            #selection du modèle
            selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = 1,
-                       choices = c("Lasso"="Lasso", "Ridge"=2, "Elasticnet",
+                       choices = c("Lasso", "Ridge", "Elasticnet",
                                    "Random Forest", "SVM")),
            
            # selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = 1,
@@ -27,7 +27,11 @@ fluidRow(
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
-         textOutput("mod1")
+         textOutput("mod1"),
+         
+         uiOutput( "Cafficheimportance"),
+         
+         amChartsOutput("CdistPlot2")
          
   )
   )
