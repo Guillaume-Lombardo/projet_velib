@@ -49,3 +49,9 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
   } 
 }
 
+####exemple
+# afficher_carte(data=read.csv("../Sortie/stations_population_voronoi500_densite.csv"),
+#                polygones=readRDS("voronoi500.rds"),
+#                stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+#                var_polygone="P13_POP",
+#                lbl_var_polygone="Densité</br>(hab/km²)")
