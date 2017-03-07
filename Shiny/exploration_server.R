@@ -32,7 +32,7 @@ output$B_map2 <- renderLeaflet({
                    polygones=voronoi500,
                    stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
                    var_polygone=var_popppp2,
-                   lbl_var_polygone=input$B_var2)
+                   lbl_var_polygone=B_var2_char)
   })
 })
 
