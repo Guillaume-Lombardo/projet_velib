@@ -1,5 +1,9 @@
 tracer_profil_membres <- function(representation, station, nb_classes=2, classe=1, nb_membre=5){
   # couleur <- brewer.pal(10, 'Paired')
+  print('tracer_profil_membres')
+  print(nb_classes)
+  print(classe)
+  print(nb_membre)
   liste_serie_temp <- sample(which(representation[[nb_classes]]$cluster==classe),nb_membre)
   liste_stations_classe <- paste('X',
                                  representation[[nb_classes]]$number[liste_serie_temp],
@@ -24,8 +28,16 @@ output$Aprofil_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
     eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
-          "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"], linetype =0, export = T)",sep = '')))
+                            "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"], linetype =0, export = T)",sep = '')))
   })
+})
+
+output$Aui_select_classe_detail <- renderUI({
+  selectInput(inputId = 'Anumero_classe_detail', label = 'Numero de la classe à détailler', 
+              selected = 1,
+              choices = 1:input$Anb_cluster)
+  print('uirender')
+  print(as.numeric(input$Anb_cluster))
 })
 
 output$Adetail_classe <- renderAmCharts({
@@ -34,10 +46,12 @@ output$Adetail_classe <- renderAmCharts({
     tracer_profil_membres(representation = representation_kmeans,
                           station = stations_colonnes,
                           nb_classes = as.numeric(input$Anb_cluster),
-                          classe = as.numeric(input$Aclasse_detail),
+                          classe = min(as.numeric(input$Aclasse_detail),as.numeric(input$Anb_cluster)),
                           nb_membre = as.numeric(input$Anb_courbe))
   })
 })
+
+
 
 
 # library(rAmCharts)
@@ -46,3 +60,13 @@ output$Adetail_classe <- renderAmCharts({
 # 
 # data('data_stock_2')
 # amTimeSeries(data_stock_2, 'date', c('ts1', 'ts2'))
+
+# output$Cafficheimportance <- renderUI({
+#   input$Cgo
+#   isolate({
+#     if (input$Cselecmod == "Lasso") {
+#       amChartsOutput("CImpvarPlot")
+#     }
+#     #fin isolate
+#   })
+# })

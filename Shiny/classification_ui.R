@@ -15,9 +15,10 @@ fluidRow(
                        min = 1,
                        max = 10
            ),
-           selectInput(inputId = 'Aclasse_detail', label = 'classe pour laquelle on veut des details', 
+           selectInput(inputId = 'Aclasse_detail', label = 'classe pour laquelle on veut des details',
                        selected = 1,
-                       choices = 1:10), 
+                       choices = 1:10),
+           # uiOutput('Aui_select_classe_detail'),
            actionButton('AmiseAjour','activation !')
          )
   ),
