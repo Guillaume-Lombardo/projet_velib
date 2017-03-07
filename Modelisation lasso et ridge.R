@@ -40,6 +40,7 @@ Y<-data[,1]
 lasso=cv.glmnet(Xapp2,Y,family="multinomial",alpha=1)
 lambdachoisi=lasso$lambda.1se
 
+
 #représentation des coefficients les plus importants
 out2<-coef(lasso)
 out22<-abs(out2[[1]])

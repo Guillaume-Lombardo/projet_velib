@@ -14,7 +14,9 @@ Cmodele <- reactive({
 })
 
 output$Cmod1 <- renderText({
-   paste("Un bien beau modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes ")
+  paste0("Modèle ", input$Cselecmod, " sur ", input$Ckmeans, " classes")
+  #  tags$h1("Heading")
+
   })
 
 #le graphique qui va afficher le barplot de l'importance des variables dans le modèle
@@ -23,7 +25,7 @@ output$CImpvarPlot <- renderAmCharts({
   isolate({
 
 
-    if (input$Cselecmod == "Lasso") {
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
       #Lasso
       #représentation des coefficients les plus importants
       #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
@@ -38,7 +40,8 @@ output$CImpvarPlot <- renderAmCharts({
       out22<-as.data.frame(as.matrix(out22))
       out22$X2<-row.names(out22)
       out22<-out22[order(out22[,1], decreasing=T),]
-      amBarplot(x="X2", y="1", data=out22[1:10,], export = T, 
+      nvar<-min(input$Cnbvar, nrow(out22))
+      amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
                 ylab="somme des valeaurs absolues des beta")
@@ -136,15 +139,35 @@ output$Cpourcentagebienclasse <- renderText({
 })
 
 
-# output$CdistPlot2 <- renderAmCharts({
-#   input$Cgo
-#   isolate({
-# 
-#     x= 1:5
-# 
-#     amHist(x, export = T)
-# 
-# 
-#     #fin isolate
-#   })
-# })
+
+#le graphique qui va afficher une mesure de deviance de CV
+#en fonction de lambda pour lasso, ridge et elasticnet
+output$Cdevlambda <- renderPlot({
+  input$Cgo
+  isolate({
+    
+    
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
+      #Lasso
+      #représentation des coefficients les plus importants
+      #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
+      modele<-Cmodele()
+      plot(modele)
+    }
+    #fin isolate
+  })
+})
+
+#affiche une mesure de deviance de CV en fonction de lambda pour lasso, ridge et elasticnet
+output$Caffichedev <- renderUI({
+  input$Cgo
+  isolate({
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
+      plotOutput("Cdevlambda")
+    }
+    #fin isolate
+  })
+})
+
+
+
