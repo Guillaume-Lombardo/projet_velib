@@ -1,9 +1,5 @@
 tracer_profil_membres <- function(representation, station, nb_classes=2, classe=1, nb_membre=5){
   # couleur <- brewer.pal(10, 'Paired')
-  print('tracer_profil_membres')
-  print(nb_classes)
-  print(classe)
-  print(nb_membre)
   liste_serie_temp <- sample(which(representation[[nb_classes]]$cluster==classe),nb_membre)
   liste_stations_classe <- paste('X',
                                  representation[[nb_classes]]$number[liste_serie_temp],
@@ -16,7 +12,9 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
                           "by.x = 'time',by.y = 'time')",
                           sep = '')))
   
-  amTimeSeries(data_series, 'time', names(data_series)[which(names(data_series)!='time')], linetype = 0, export = T)
+  amTimeSeries(data_series, 'time', names(data_series)[which(names(data_series)!='time')], 
+               linetype = 0, export = T,
+               main = paste('description de la classe ',classe, ' par ',nb_membre,' groupes'))
 }
 
 output$Amod1 <- renderText({
@@ -28,7 +26,9 @@ output$Aprofil_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
     eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
-                            "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"], linetype =0, export = T)",sep = '')))
+                            "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
+                            " linetype =0, export = T,",
+                            "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
   })
 })
 
@@ -51,7 +51,17 @@ output$Adetail_classe <- renderAmCharts({
   })
 })
 
+output$A_map2 <- renderLeaflet({
+  data_carte <- representation_kmeans[[2]][,c('number','cluster')]
+  data_carte$couleur_poly <- data_carte$cluster 
+  voronoi_custom <- voronoi500@polygons[which(sapply(1:length(voronoi500), function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
+  afficher_carte(data=data_carte,
+                 polygones=voronoi_custom,
+                 stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+                 var_polygone='couleur_poly',
+                 lbl_var_polygone='cluster')
 
+})
 
 
 # library(rAmCharts)
