@@ -110,3 +110,36 @@ for(i in 2:10){
               file = paste('./Sortie/clustering_',i,'_classes_mod7j.csv',sep = ''),
               sep = ';',dec = ',',row.names = F)
 }
+
+pre_dates <- as.POSIXct((seq_along(names(profil_par_classe[[2]][,2:505]))-1)*20*60-3600, origin = "2017-03-06")
+stations_colonnes <-  t(station_x_date_mod7j[,2:505])
+colnames(stations_colonnes) <-  paste('X',station_x_date_mod7j[,1],sep = '')
+rownames(stations_colonnes) <- NULL
+stations_colonnes <- data.frame(stations_colonnes)
+stations_colonnes$time <- pre_dates
+
+eval(parse(text = paste('profil_colonnes_',1:10,' <- data.frame(t(profil_par_classe[[',1:10,']][,2:505]))',sep = '')))
+eval(parse(text = paste('names(profil_colonnes_',1:10,') <- paste("P",seq_along(names(profil_colonnes_',1:10,')),sep ="")',sep = '')))
+eval(parse(text = paste('profil_colonnes_',1:10,'$time <- pre_dates',sep = '')))
+eval(parse(text = paste('rownames(profil_colonnes_',1:10,') <- NULL',sep = '')))
+
+eval(parse(text = paste("write.table(x = profil_colonnes_",1:10,",",
+      "file = './Sortie/profil_colonnes_,",1:10,".csv',",
+      "sep = ';',dec = ',',row.names = F)", sep = '')))
+write.table(x = stations_colonnes,
+            file = paste('./Sortie/stations_colonnes.csv',sep = ''),
+            sep = ';',dec = ',',row.names = F)
+
+stations_colonnes <- read.table(file = paste('./Sortie/stations_colonnes.csv',sep = ''),
+                                sep = ';',dec = ',',header = T,colClasses = c('time' = 'POSIXct'))
+eval(parse(text = paste("profil_colonnes_",1:10,
+                        " <- read.table(file = './Sortie/profil_colonnes_",
+                        1:10,".csv',",
+                        "sep = ';',dec = ',',header = T,colClasses = c('time' = 'POSIXct'))",
+                        sep = '')))
+
+saveRDS(object = representation_kmeans,file = './Sortie/representation_kmeans.RDS',compress = 'xz')
+saveRDS(object = stations_colonnes,file = './Sortie/stations_colonnes.RDS',compress = 'xz')
+eval(parse(text = paste("saveRDS(object = profil_colonnes_",1:10,",",
+                        "file = './Sortie/profil_colonnes_",1:10,".RDS',",
+                        "compress = 'xz')", sep = '')))
