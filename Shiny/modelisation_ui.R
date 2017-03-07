@@ -20,28 +20,33 @@ fluidRow(
            
            # #Proposition de centrer-réduire les variables
            checkboxInput(inputId = "Cscale", label = "Centrer-réduire ?", value=T),
-
+           
            #nombre de variables à afficher
            numericInput(inputId="Cnbvar", label="Nombre de variables explicatives à afficher", value=10, min = 1),
            
            # #action boutton pour lancer le calcul
            actionButton(inputId="Cgo", "Go !")
-         
-          
-  )),
+           
+           
+         )),
   # deuxieme colonne avec les sortiesw
   column(width = 8, 
          
          tags$div( tags$h1(textOutput("Cmod1")) ), 
          
          #affiche les variables importantes quand c'est possible
-          uiOutput( "Cafficheimportance"),
+         uiOutput( "Cafficheimportance"),
          
-         #tableconfusion en nombre
-         tableOutput("Ctableconfusion"),
+         tags$h2("Tables de confusion et proportion de biens classés"),
          
-         #tableconfusion en %
-         tableOutput("Ctableconfusionp"),
+         column(width = 5,
+                #tableconfusion en nombre
+                tableOutput("Ctableconfusion")
+         ),
+         column(width = 5,
+                #tableconfusion en %
+                tableOutput("Ctableconfusionp")
+         ),
          
          #proportion de biens classés
          textOutput("Cpourcentagebienclasse"), 
@@ -49,7 +54,7 @@ fluidRow(
          #affiche une mesure de deviance de CV 
          #en fonction de lambda pour lasso, ridge et elasticnet
          uiOutput( "Caffichedev")
-
+         
   )
-  )
+)
 
