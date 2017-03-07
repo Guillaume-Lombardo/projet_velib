@@ -103,3 +103,10 @@ for(i in 2:10){
 # grid.draw(profil_6_cluster_classe_4)
 # grid.draw(profil_6_cluster_classe_5)
 # grid.draw(profil_6_cluster_classe_6)
+tracer_profil_membres(6,2,l)
+
+for(i in 2:10){
+  write.table(x = representation_kmeans[[i]][,c('number','cluster')],
+              file = paste('./Sortie/clustering_',i,'_classes_mod7j.csv',sep = ''),
+              sep = ';',dec = ',',row.names = F)
+}
