@@ -1,8 +1,3 @@
-representation_kmeans <- reactive(readRDS(file = '../Sortie/representation_kmeans.RDS'))
-stations_colonnes <- reactive(readRDS(file = '../Sortie/stations_colonnes.RDS'))
-eval(parse(text = paste("profil_colonnes_",1:10," <- reactive(readRDS(",
-                        "file = '../Sortie/profil_colonnes_",1:10,".RDS'))", sep = '')))
-
 tracer_profil_membres <- function(representation, station, nb_classes=2, classe=1, nb_membre=5){
   # couleur <- brewer.pal(10, 'Paired')
   liste_serie_temp <- sample(which(representation[[nb_classes]]$cluster==classe),nb_membre)
@@ -12,7 +7,7 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
   liste_profil_classe <- paste('P',classe,sep = '')
   
   eval(parse(text = paste("data_series <- merge(x = profil_colonnes_",nb_classes,
-                          "()[,c('time',liste_profil_classe)],",
+                          "[,c('time',liste_profil_classe)],",
                           "y = station[,c('time',liste_stations_classe)],",
                           "by.x = 'time',by.y = 'time')",
                           sep = '')))
@@ -22,22 +17,22 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
 
 output$Amod1 <- renderText({
   paste("carte ; {profil de classe ; 1 classe + quelques series} ; variances")
-  # print(head(profil_colonnes_6()))
+  # print(head(profil_colonnes_6))
 })
 
 output$Aprofil_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
-    eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,"(), 'time', ",
-          "names(profil_colonnes_",input$Anb_cluster,"())[1:",input$Anb_cluster,"], linetype =0, export = T)",sep = '')))
+    eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
+          "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"], linetype =0, export = T)",sep = '')))
   })
 })
 
 output$Adetail_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
-    tracer_profil_membres(representation = representation_kmeans(),
-                          station = stations_colonnes(),
+    tracer_profil_membres(representation = representation_kmeans,
+                          station = stations_colonnes,
                           nb_classes = as.numeric(input$Anb_cluster),
                           classe = as.numeric(input$Aclasse_detail),
                           nb_membre = as.numeric(input$Anb_courbe))

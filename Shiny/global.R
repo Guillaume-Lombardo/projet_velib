@@ -1,6 +1,6 @@
 library(shiny)
 library(rAmCharts)
-
+library(leaflet)
 
 
 
@@ -58,3 +58,9 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
 #                stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
 #                var_polygone="P13_POP",
 #                lbl_var_polygone="Densité</br>(hab/km²)")
+
+
+representation_kmeans <- readRDS(file = '../Sortie/representation_kmeans.RDS')
+stations_colonnes <- readRDS(file = '../Sortie/stations_colonnes.RDS')
+eval(parse(text = paste("profil_colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/profil_colonnes_",1:10,".RDS')", sep = '')))
