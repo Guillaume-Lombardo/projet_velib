@@ -5,21 +5,20 @@ library(rAmCharts)
 
 
 
-#data doit contenir les variables à afficher et la variable number
-#stations doit contenir number, lat, lon, name
-#polygones doit être un SpatialPolygons
+#data (1 ligne par station) doit contenir les variables à afficher et la variable number
 #var_polygone est la variable représentée (couleurs polygones), doit être dans data
 #var_point est pour colorer les points
 #lbl_var_polygone : libellé de la variable pour la légende
 #lbl_var_point : libellé de la variable pour les points
-
-afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NULL, lbl_var_polygone, lbl_var_point)
+afficher_carte <- function(data, var_polygone, var_point=NULL, lbl_var_polygone, lbl_var_point)
 {
   zzz <- data
   rownames(zzz) <- zzz$number
   nrow(zzz)
   eval(parse(text = paste('palll1 <- leaflet::colorNumeric("viridis",domain=zzz$',var_polygone,',reverse=T)',sep = '')))
-  spdf <- SpatialPolygonsDataFrame(polygones, zzz)
+  v500 <- readRDS("Shiny/voronoi500.rds")
+  stations <- read.csv(file="Sortie/stations_sirene_voronoi500.csv")[,2:6]
+  spdf <- SpatialPolygonsDataFrame(v500, zzz)
   
   parse_leaflet <- 'carte <- leaflet(spdf) %>%'
   parse_tiles <- 'addProviderTiles(providers$Esri.WorldTopoMap) %>%'
@@ -50,3 +49,7 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
     return(carte)
   } 
 }
+
+# afficher_carte(data=read.csv("Sortie/stations_population_voronoi500_densite.csv"),
+#                var_polygone="P13_POP", 
+#                lbl_var_polygone="Densité</br>(hab/km²)")

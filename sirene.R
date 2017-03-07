@@ -75,6 +75,8 @@ voronoi500@polygons[[i]]@ID <- voronoi@polygons[[i]]@ID
 voronoi100@polygons[[i]]@ID <- voronoi@polygons[[i]]@ID
 }
 
+# saveRDS(voronoi500, "Shiny/voronoi500.rds")
+
 #### visualisation (au cas où)
 # leaflet() %>%
 #   addProviderTiles(providers$Esri.WorldTopoMap) %>%
