@@ -26,8 +26,8 @@ fluidRow(
   column(width = 8, 
          textOutput("Amod1"),
          amChartsOutput('Aprofil_classe'),
-         amChartsOutput('Adetail_classe')
-         
+         amChartsOutput('Adetail_classe'),
+         leafletOutput('A_map2')
   )
 )
 
