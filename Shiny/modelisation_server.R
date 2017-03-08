@@ -183,21 +183,34 @@ output$Caffichedev <- renderUI({
 
 
 #affiche la carte des stations mal classées
-# output$C_map <- renderLeaflet({
-#   input$Cgo
-#   isolate({
-#     X<-readRDS(file = "../Modeles/Xnonscale.RDS")
-#     url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
-#     Y <- readRDS(file = url) 
-#     Y <- as.data.frame(cbind(X[,1],Y))
-#     names(Y)[1]<-"number"
-#     afficher_carte(data=Y, 
-#                    polygones=voronoi500,
-#                    stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
-#                    var_polygone="Y",
-#                    lbl_var_polygone="cluster initial")
-#   })
-# })
+output$C_map <- renderLeaflet({
+  input$Cgo
+  isolate({
+    url<-paste0("../Sortie/clustering_",input$Ckmeans,"_classes_mod7j.csv")
+    Y<-read.csv(url, sep=";") 
+    if(input$Cscale){
+      X<-readRDS(file = "../Modeles/Xscale.RDS")
+    }
+    else{
+      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+    }  
+    modele<-Cmodele()
+    Yprev<-predict(modele, X, type="class")
+    Yprev<-as.data.frame(Yprev)
+    colnames(Yprev)[1]<-"Yprev"
+    merge(Y, Yprev)
+
+    voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
+                                              function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
+     afficher_carte(data=Y,
+                   polygones=voronoi_custom,
+                   stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+                   var_polygone="cluster",
+                   var_point="cluster",
+                   lbl_var_polygone="cluster initial",
+                   lbl_var_point="cluster prévu")
+  })
+})
 
 
 

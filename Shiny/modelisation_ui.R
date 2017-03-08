@@ -74,10 +74,11 @@ fluidRow(
          #en fonction de lambda pour lasso, ridge et elasticnet
          uiOutput( "Caffichedev"),
          
-         hr()
+         hr(),
          
          #affiche la carte des stations mal classées
-         # leafletOutput("C_map")
+         leafletOutput("C_map"),
+         hr()
          
   )
 )
