@@ -186,19 +186,28 @@ output$Caffichedev <- renderUI({
 output$C_map <- renderLeaflet({
   input$Cgo
   isolate({
+    #récupération des clusters initiaux
     url<-paste0("../Sortie/clustering_",input$Ckmeans,"_classes_mod7j.csv")
     Y<-read.csv(url, sep=";") 
+    #récupération des variables expli
     if(input$Cscale){
       X<-readRDS(file = "../Modeles/Xscale.RDS")
     }
     else{
       X<-readRDS(file = "../Modeles/Xnonscale.RDS")
     }  
+    #récupération du modèle
     modele<-Cmodele()
+    #calcul du Y prévisionnel
     Yprev<-predict(modele, X, type="class")
-    Yprev<-as.data.frame(Yprev)
+    
+    #mise en forme de la matrice pour l'affichage de la carte
+    Yprev<-as.data.frame(as.numeric(Yprev))
     colnames(Yprev)[1]<-"Yprev"
-    merge(Y, Yprev)
+    Y<-cbind.data.frame(Y, Yprev)
+    #on ne retient que les stations mal prévues
+    Y<-Y[Y$cluster!=Y$Yprev,]
+    
 
     voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
                                               function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
@@ -206,11 +215,55 @@ output$C_map <- renderLeaflet({
                    polygones=voronoi_custom,
                    stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
                    var_polygone="cluster",
-                   var_point="cluster",
+                   var_point="Yprev",
                    lbl_var_polygone="cluster initial",
                    lbl_var_point="cluster prévu")
   })
 })
 
+
+#le graphique qui va afficher le barplot de l'importance des variables dans le modèle
+output$CCoeffPlot <- renderAmCharts({
+  input$Cgo
+  nvar<-input$Cnbvar
+  icluster<-input$Ccoeff
+  isolate({
+ 
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
+      #Lasso
+      #représentation des coefficients les plus importants
+      #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
+      modele<-Cmodele()
+      out2<-coef(modele)
+      out22<-abs(out2[[icluster]])
+      out22<-as.data.frame(as.matrix(out22))
+      out22$X2<-row.names(out22)
+      out22<-out22[order(out22[,1], decreasing=T),]
+      nvar<-min(input$Cnbvar, nrow(out22))
+      amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
+                main= "Importance des variables", 
+                xlab = "Variables explicatives", 
+                ylab="somme des valeaurs absolues des beta")
+    }
+    else
+    {
+      x= 1:5
+      amHist(x, export = T)
+    }
+    #fin isolate
+    
+  })
+})
+
+#On affiche le graphique des importances si c'est possible pour le modèle retenu
+output$Caffichecoeff <- renderUI({
+  input$Cgo
+  isolate({
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
+      amChartsOutput("CCoeffPlot")
+    }
+    #fin isolate
+  })
+})
 
 

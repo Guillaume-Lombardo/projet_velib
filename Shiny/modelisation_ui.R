@@ -21,11 +21,12 @@ fluidRow(
            # #Proposition de centrer-réduire les variables
            checkboxInput(inputId = "Cscale", label = "Centrer-réduire ?", value=T),
            
-           #nombre de variables à afficher
-           numericInput(inputId="Cnbvar", label="Nombre de variables explicatives à afficher", value=10, min = 1),
-           
            # #action boutton pour lancer le calcul
-           actionButton(inputId="Cgo", "Go !")
+           actionButton(inputId="Cgo", "Go !"),
+           hr(),
+           
+           #nombre de variables à afficher
+           numericInput(inputId="Cnbvar", label="Nombre de variables explicatives à afficher", value=10, min = 1)
            
            
          )),
@@ -68,16 +69,24 @@ fluidRow(
          
          #proportion de biens classés
          div(textOutput("Cpourcentagebienclasse"), align="center"), 
-         
-         hr(),
-         #affiche une mesure de deviance de CV 
-         #en fonction de lambda pour lasso, ridge et elasticnet
-         uiOutput( "Caffichedev"),
-         
          hr(),
          
          #affiche la carte des stations mal classées
          leafletOutput("C_map"),
+         hr(),
+         
+         #affiche une mesure de deviance de CV 
+         #en fonction de lambda pour lasso, ridge et elasticnet
+         uiOutput( "Caffichedev"),
+         hr(),
+         
+         #affiche les coefficients pour un cluster donné
+         # par ordre décroissant pour lasso, ridge et elasticnet
+         #nombre de variables à afficher
+         #A transforemer en uioutput pour gérer le max
+         numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=10),
+         hr(),
+         uiOutput( "Caffichecoeff"),
          hr()
          
   )
