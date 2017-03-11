@@ -9,10 +9,10 @@ k<-6
 ####################################
 scale<-1
 
-for (k in 5:6)
-{
-  for (scale in 0:1)
-  {
+# for (k in 2:10)
+# {
+#   for (scale in 0:1)
+#   {
     
     
     #importations des données
@@ -144,5 +144,5 @@ for (k in 5:6)
     # confusionelasticnet2
     # # sum(diag(confusionelasticnet))/sum(confusionelasticnet)
     
-  }
-}
+#   }
+# }
