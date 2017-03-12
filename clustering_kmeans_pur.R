@@ -12,12 +12,37 @@ extraction_liste <- function(liste,indice){
 	return(res)
 }
 
+### clustering kmeans #############################################################################
+
+station_PCA <- PCA(X = station_x_date_mod7j[ ,2:ncol(station_x_date_mod7j)],ncp = ncol(station_x_date_mod7j)-1)
+
+plot.PCA(x = station_PCA,axes = c(1,2),choix = 'var')
+plot.PCA(x = station_PCA,axes = c(1,3),choix = 'var')
+plot.PCA(x = station_PCA,axes = c(2,3),choix = 'var')
+plot.PCA(x = station_PCA,axes = c(1,4),choix = 'var')
+plot.PCA(x = station_PCA,axes = c(1,2),label = 'none')
+plot.PCA(x = station_PCA,axes = c(1,3),label = 'none')
+plot.PCA(x = station_PCA,axes = c(2,3),label = 'none')
+plot.PCA(x = station_PCA,axes = c(1,2),label = 'none')
+
+Nouveau_vers_ancien <- station_PCA$var$coord
+Ancien_vers_nouveau <- solve(Nouveau_vers_ancien)
+dim(Nouveau_vers_ancien) ; dim(Ancien_vers_nouveau) ; dim(station_x_date_mod7j[ ,2:ncol(station_x_date_mod7j)])
+nouvelle_series <- as.matrix(station_x_date_mod7j[ ,2:ncol(station_x_date_mod7j)]) %*% t(Ancien_vers_nouveau)
+rownames(nouvelle_series) <- station_x_date_mod7j[ ,1]
+
+
 cluster <- lapply(1:10,function(.x) kmeans(station_x_date_mod7j[ ,2:ncol(station_x_date_mod7j)],.x,iter.max = 50))
 representation_kmeans <- lapply(1:10,function(.x) merge(data.frame(number = station_x_date_mod7j$number,
 																																	 cluster = cluster[[.x]]$cluster,
 																																	 station_x_date_mod7j[,-1]), 
 																												stations_gps, by="number", all.x=F))
 
+cluster2 <- lapply(1:10,function(.x) kmeans(nouvelle_series,.x,iter.max = 50))
+representation_kmeans2 <- lapply(1:10,function(.x) merge(data.frame(number = station_x_date_mod7j$number,
+																																	 cluster = cluster[[.x]]$cluster,
+																																	 station_x_date_mod7j[,-1]), 
+																												stations_gps, by="number", all.x=F))
 ### profil par classe  ############################################################################
 
 moyenne_par_classe <- function(x){
@@ -61,6 +86,47 @@ moyenne_par_classe <- function(x){
 	return(res)
 }
 
+moyenne_par_classe2 <- function(x){
+	liste_var_temps <- names(representation_kmeans2[[x]])[which(substr(names(representation_kmeans2[[x]]),1,1)=='T')]
+	liste_moyenne <- paste0('M', substring(liste_var_temps,2)," = mean(",liste_var_temps,",na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p05 <- paste0('P05', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.05,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p10 <- paste0('P10', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.10,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p25 <- paste0('P25', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.25,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p50 <- paste0('P50', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.50,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p75 <- paste0('P75', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.75,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p90 <- paste0('P90', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.90,na.rm=T)") %>%
+		paste(collapse = ', ')
+	liste_p95 <- paste0('P95', substring(liste_var_temps,2)," = quantile(",liste_var_temps,",0.95,na.rm=T)") %>%
+		paste(collapse = ', ')
+	
+	chaine_dplyr_moy <-  paste0('res_moy <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_moyenne,')')
+	chaine_dplyr_P05 <-  paste0('res_P05 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p05,')')
+	chaine_dplyr_P10 <-  paste0('res_P10 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p10,')')
+	chaine_dplyr_P25 <-  paste0('res_P25 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p25,')')
+	chaine_dplyr_P50 <-  paste0('res_P50 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p50,')')
+	chaine_dplyr_P75 <-  paste0('res_P75 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p75,')')
+	chaine_dplyr_P90 <-  paste0('res_P90 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p90,')')
+	chaine_dplyr_P95 <-  paste0('res_P95 <- representation_kmeans2[[',x,']] %>% group_by(cluster) %>% summarise(',liste_p95,')')
+	
+	eval(parse(text =chaine_dplyr_moy))
+	eval(parse(text =chaine_dplyr_P05))
+	eval(parse(text =chaine_dplyr_P10))
+	eval(parse(text =chaine_dplyr_P25))
+	eval(parse(text =chaine_dplyr_P50))
+	eval(parse(text =chaine_dplyr_P75))
+	eval(parse(text =chaine_dplyr_P90))
+	eval(parse(text =chaine_dplyr_P95))
+	
+	res <- list(moyenne =res_moy, p05 =res_P05, p10 =res_P10, p25 =res_P25, p50 =res_P50, p75 =res_P75, p90 =res_P90, p95 =res_P95)
+	return(res)
+}
+
 description_classe <- lapply(1:10,moyenne_par_classe)
 profil_par_classe <- extraction_liste(description_classe,1)
 profil_p05_classe <- extraction_liste(description_classe,2)
@@ -71,6 +137,7 @@ profil_p75_classe <- extraction_liste(description_classe,6)
 profil_p90_classe <- extraction_liste(description_classe,7)
 profil_p95_classe <- extraction_liste(description_classe,8)
 
+description_classe2 <- lapply(1:10,moyenne_par_classe2)
 ### export des classes  ###########################################################################
 for(i in 2:10){
 	write.table(x = representation_kmeans[[i]][,c('number','cluster')],
