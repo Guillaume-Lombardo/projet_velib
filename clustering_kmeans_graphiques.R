@@ -3,6 +3,7 @@ station_x_date_mod7j <- read.table(file = './Sortie/station_x_date_mod7j.csv',se
 stations_gps <- read.table(file = './Sortie/stations_gps.csv',sep = ';',dec = ',',header = T)
 
 representation_kmeans <- readRDS(file = './Sortie/representation_kmeans.RDS')
+representation_kmeans2 <- readRDS(file = './Sortie/representation_kmeans2.RDS')
 stations_colonnes <- readRDS(file = './Sortie/stations_colonnes.RDS')
 eval(parse(text = paste("profil_colonnes_",1:10," <- readRDS(",
 												"file = './Sortie/profil_colonnes_",1:10,".RDS')", sep = '')))
@@ -20,23 +21,64 @@ eval(parse(text = paste("p90_colonnes_",1:10," <- readRDS(",
 												"file = './Sortie/p90_colonnes_",1:10,".RDS')", sep = '')))
 eval(parse(text = paste("p95_colonnes_",1:10," <- readRDS(",
 												"file = './Sortie/p95_colonnes_",1:10,".RDS')", sep = '')))
+##
+eval(parse(text = paste("profil_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/profil_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p05_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p05_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p10_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p10_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p25_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p25_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p50_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p50_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p75_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p75_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p90_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p90_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p95_2colonnes_",1:10," <- readRDS(",
+												"file = './Sortie/p95_2colonnes_",1:10,".RDS')", sep = '')))
 
 ### import d'une carte google #####################################################################
 
 center <- c(mean(range(representation_kmeans[[2]][,'lat'])),mean(range(representation_kmeans[[2]][,'lon'])))
 zoom <- MaxZoom(range(representation_kmeans[[2]][,'lat'])*1,range(representation_kmeans[[2]][,'lon'])*1 )
 carte <- GetMap(center=center, zoom=zoom)
+
+calcul_graphique <- F
 ### representation graphique des kmeans en fonction du nombre de groupe ###########################
 # tracer le graphique grid a : grid.draw(a)
-for(i in 2:10){
-	ifelse(is.null(dev.list()),1,dev.off()) # nettoye l'ecran pour enregistrer la carte avec les groupes 
-	PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], 
-									pch=16, cex=1, 
-									col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans[[i]]$cluster)])
-	grid.echo()
-	eval(parse(text = paste('map_plot_',i,'_cluster <- grid.grab()',sep = '')))
-	dev.off()
+if(calcul_graphique){
+	for(i in 2:10){
+		ifelse(is.null(dev.list()),1,dev.off()) # nettoye l'ecran pour enregistrer la carte avec les groupes 
+		PlotOnStaticMap(carte, lat=representation_kmeans[[i]][,'lat'], lon=representation_kmeans[[i]][,'lon'], 
+										pch=16, cex=1, 
+										col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans[[i]]$cluster)])
+		grid.echo()
+		eval(parse(text = paste('map_plot_',i,'_cluster <- grid.grab()',sep = '')))
+		dev.off()
+	}
 }
+
+
+# layout(matrix(1:2,ncol = 1))
+PlotOnStaticMap(carte, lat=representation_kmeans2[[6]][,'lat'], lon=representation_kmeans2[[6]][,'lon'], 
+								pch=16, cex=1, 
+								col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans2[[6]]$cluster)])
+PlotOnStaticMap(carte, lat=representation_kmeans2[[6]][,'lat'], lon=representation_kmeans2[[6]][,'lon'], 
+								pch=16, cex=1, 
+								col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans[[6]]$cluster)])
+
+PlotOnStaticMap(carte, lat=representation_kmeans2[[5]][,'lat'], lon=representation_kmeans2[[5]][,'lon'], 
+								pch=16, cex=1, 
+								col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans2[[5]]$cluster)])
+PlotOnStaticMap(carte, lat=representation_kmeans2[[4]][,'lat'], lon=representation_kmeans2[[4]][,'lon'], 
+								pch=16, cex=1, 
+								col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans2[[4]]$cluster)])
+PlotOnStaticMap(carte, lat=representation_kmeans2[[7]][,'lat'], lon=representation_kmeans2[[7]][,'lon'], 
+								pch=16, cex=1, 
+								col=brewer.pal(10, 'Paired')[as.numeric(representation_kmeans2[[7]]$cluster)])
+
 
 # grid.draw(map_plot_2_cluster)
 # grid.draw(map_plot_3_cluster)
@@ -49,25 +91,41 @@ for(i in 2:10){
 # grid.draw(map_plot_10_cluster)
 
 # tracer profil de classe en fonction du nombre de classes ########################################
-for(i in 2:10){
-	print(i)
-	ifelse(is.null(dev.list()),1,dev.off())
-	couleur <- brewer.pal(10, 'Paired')
-	n <- ncol(profil_par_classe[[i]])
-	xx <- seq_along(names(profil_par_classe[[i]])[-1])
-	plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',
-			 col = couleur[1],ylim = c(0,1),
-			 ylab = 'proportion de velib dans la classe',
-			 xlab = '')
-	for(j in 2:i){
-		lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',
-					col = couleur[j])  
-	}
-	legend(450,1,legend = 1:i,col = couleur[1:i],pch = 15)
-	grid.echo()
-	eval(parse(text = paste('profil_de_classe_',i,'_cluster <- grid.grab()',sep = '')))
-	dev.off()
+if(calcul_graphique){
+	for(i in 2:10){
+		print(i)
+		ifelse(is.null(dev.list()),1,dev.off())
+		couleur <- brewer.pal(10, 'Paired')
+		n <- ncol(profil_par_classe[[i]])
+		xx <- seq_along(names(profil_par_classe[[i]])[-1])
+		plot(xx,as.data.frame(profil_par_classe[[i]][1,2:n]),type = 'l',
+				 col = couleur[1],ylim = c(0,1),
+				 ylab = 'proportion de velib dans la classe',
+				 xlab = '')
+		for(j in 2:i){
+			lines(xx,as.data.frame(profil_par_classe[[i]][j,2:n]),type = 'l',
+						col = couleur[j])  
+		}
+		legend(450,1,legend = 1:i,col = couleur[1:i],pch = 15)
+		grid.echo()
+		eval(parse(text = paste('profil_de_classe_',i,'_cluster <- grid.grab()',sep = '')))
+		dev.off()
+	}	
 }
+
+i <-3
+couleur <- brewer.pal(10, 'Paired')
+n <- ncol(profil2_par_classe[[i]])
+xx <- seq_along(names(profil2_par_classe[[i]])[-1])
+plot(xx,as.data.frame(profil2_par_classe[[i]][1,2:n]),type = 'l',
+		 col = couleur[1],ylim = c(0,1),
+		 ylab = 'proportion de velib dans la classe',
+		 xlab = '')
+for(j in 2:i){
+	lines(xx,as.data.frame(profil2_par_classe[[i]][j,2:n]),type = 'l',
+				col = couleur[j])  
+}
+legend(450,1,legend = 1:i,col = couleur[1:i],pch = 15)
 
 # grid.draw(profil_de_classe_2_cluster)
 # grid.draw(profil_de_classe_3_cluster)
@@ -81,7 +139,7 @@ for(i in 2:10){
 
 # tracer profil de classe avec les membre de la classe ############################################
 l <- 5L
-tracer_profil_membres <- function(nb_classes, classe, nb_membre){
+tracer_profil_membres <- function(representation_kmeans,nb_classes, classe, nb_membre){
 	ifelse(is.null(dev.list()),1,dev.off())
 	couleur <- brewer.pal(10, 'Paired')
 	n <- ncol(representation_kmeans[[nb_classes]])-3
@@ -96,11 +154,13 @@ tracer_profil_membres <- function(nb_classes, classe, nb_membre){
 	eval(parse(text = paste('profil_',nb_classes,'_cluster_classe_',classe,' <- grid.grab()',sep = '')))
 }
 
-for(i in 2:10){
-	for (k in 1:i){
-		tracer_profil_membres(i,k,l)
-		dev.off()
-	}
+if(calcul_graphique){
+	for(i in 2:10){
+		for (k in 1:i){
+			tracer_profil_membres(representation_kmeans,i,k,l)
+			dev.off()
+		}
+	}	
 }
 
 # grid.draw(profil_6_cluster_classe_1)
