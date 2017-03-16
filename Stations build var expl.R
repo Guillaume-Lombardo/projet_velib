@@ -6,6 +6,7 @@
 library(jsonlite)
 library(curl)
 library(cluster)
+library(stringr)
 
 #pour avoir les altitudes et la clé d'API associée
 library(googleway)
@@ -15,6 +16,9 @@ library(foreign) # pour lire le dbf equipement
 require(geosphere)
 library(ggmap)
 library(RgoogleMaps)
+
+library(rgeos)
+library(sp)
 
 #récupération de la liste officielle des stations
 #################################################
@@ -181,6 +185,26 @@ distanceatoueslesstations<-function(coord)
 
 stations$distcentre2<-apply(stations[,c("lat","lon")], MARGIN=1, FUN=distanceatoueslesstations)/1227
 
+# distance au bord
+####################
+
+#selection des stations formant l'enveloppe convexe
+envconv<-chull(stations[,c("lon", "lat")])
+#transformation de ces points en un objet SpatialPolygons
+pol = SpatialPolygons(list(Polygons(list(Polygon(cbind(lat=stations[envconv,"lat"], lon=stations[envconv,"lon"]))),
+                                     "ID")),
+                       proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"))
+# transformation de toutes les coordonnées des stations en objet SpatialPoints
+pts=SpatialPoints(cbind(lat=stations[,"lat"], lon=stations[,"lon"]),
+                   proj4string = CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"))
+#passage à une projection cartesienne
+pol<- spTransform(pol, CRS("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +no_defs"))
+pts<- spTransform(pts, CRS("+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +no_defs"))
+
+#calcul de la distance au bord et affectation au data.frame
+stations$distbord<-as.vector(gDistance(pts, as(pol, "SpatialLines"), byid = TRUE))
+
+
 # Distance à la station de métro la plus proche
 #################################################
 
@@ -191,6 +215,7 @@ RATP<-fromJSON(url)
 RATPlonlat<-cbind(RATP$elements$lat,RATP$elements$lon)
 RATPna<-is.na(RATPlonlat[,1])*is.na(RATPlonlat[,2])
 RATPlonlat<-RATPlonlat[RATPna==0,]
+RATPlonlat<-unique(RATPlonlat)
 
 #visualisation des stations 
 center<-c(mean(range(RATPlonlat[,1])),mean(range(RATPlonlat[,2])))
@@ -205,9 +230,94 @@ for (i  in (1:nrow(stations)))
   stations$RATP[i]<-min(distGeo(stations[i,c("lat","lon")], RATPlonlat ))
 }
 
+
+#création d'une base de donnée de stations en fonction du trafic
+#on récupère la base de donnée trafic
+url="data/trafic-RATP-2015.json"
+RATPtrafic<-fromJSON(url)
+RATPtrafic<-RATPtrafic$fields[,c("station","trafic")]
+names(RATPtrafic)<-c("stations","trafic")
+RATPtrafic<-RATPtrafic[!is.na(RATPtrafic$stations),]
+RATPtrafic$stations<-str_replace(RATPtrafic$stations, "-RER","")
+for (i in 1:10){
+  RATPtrafic$stations<-str_replace(RATPtrafic$stations, " ","")
+  RATPtrafic$stations<-str_replace(RATPtrafic$stations, "-","")
+}
+RATPtrafic$stations<-tolower(RATPtrafic$stations)
+RATPtrafic<-aggregate(RATPtrafic$trafic, by=list(RATPtrafic$stations), sum)
+names(RATPtrafic)<-c("stations","trafic")
+#on récupère les coordonnées par stations qui sont absentes de la base précédente
+RATPnamelonlat<-cbind.data.frame(RATP$elements$tags$name,RATP$elements$lat,RATP$elements$lon)
+RATPna<-is.na(RATPnamelonlat[,1])*is.na(RATPnamelonlat[,2])
+RATPnamelonlat<-RATPnamelonlat[RATPna==0,]
+names(RATPnamelonlat)<-c("stations", "lat", "lon")
+RATPnamelonlat<-RATPnamelonlat[1:655,]
+#on fait plein de traitement de texte pour mettre les stations sous le même format que la base précédente
+RATPnamelonlat$stations<-as.character(RATPnamelonlat$stations)
+RATPnamelonlat$stations[12] <- "Parc de Saint-Cloud"
+RATPnamelonlat$stations[419] <- "Parc de Saint-Cloud"
+RATPnamelonlat$stations[431] <- "Suresnes - Longchamp"
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " \\(RER\\)","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " \\(métro\\)","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " \\(metro\\)","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " \\(métro 1\\)","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " \\(RER A\\)","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " RER A","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " RER D","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, "\\(","")
+RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, "\\)","")
+tiret<-str_sub(RATPnamelonlat$stations[3],8,8)
+tiret2<-str_sub(RATPnamelonlat$stations[21],8,8)
+tiret3<-str_sub(RATPnamelonlat$stations[29],25,25)
+for (i in 1:10){
+  RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, " ","")
+  RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, "-","")
+  RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, tiret ,"")
+  RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, tiret2 ,"")
+  RATPnamelonlat$stations<-str_replace(RATPnamelonlat$stations, tiret3 ,"")
+}
+RATPnamelonlat<-RATPnamelonlat[!duplicated(RATPnamelonlat$stations),]
+RATPnamelonlat$stations<-tolower(RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[éèëê]", "e", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[àâä]", "a", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[îï]", "i", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[ùüû]", "u", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[ôö]", "o", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("[ç]", "c", RATPnamelonlat$stations)
+RATPnamelonlat[which(str_sub(RATPnamelonlat$stations,1,30)=="bibliothequefrancoismitterrand"),"stations"]<-"bibliotheque"
+RATPnamelonlat<-unique(RATPnamelonlat)
+RATPnamelonlat$stations<-gsub("creteilprefecturehoteldeville", "creteilprefecture", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("creteill'echathopitalhenrimondor", "creteill'echat", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("ladefensegrandearche", "ladefense", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("louvrerivoli", "louvre", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("marnelavalleechessyparcdisneyland", "marnelavalleechessy", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("noisielleluzard", "noisiel", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("noisychampschampynesles", "noisychamps", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("palaisroyalmuseedulouvre", "palaisroyal", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("pierreetmariecurie", "pierrecurie", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("placedeclichy", "placeclichy", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("saintmandetourelle", "saintmande", RATPnamelonlat$stations)
+RATPnamelonlat$stations<-gsub("logneslemandinet", "lognes", RATPnamelonlat$stations)
+RATPtrafic<- merge(RATPtrafic, RATPnamelonlat, by="stations" )
+
+#on créé une variable RATP2 qui sera un peu différente car il n'y a pas les trasm et les RER zone SNCF
+stations$RATP2<-0
+#RATPtrafic donne la fréquentation (en entrée hors correspondance) de la station RATP2 la plus proche
+stations$RATPtrafic<-0
+for (i in 1:nrow(stations))
+{
+  temp<-distGeo(stations[i,c("lat","lon")], RATPtrafic[,c("lat","lon")] )
+  n<-which(rank(temp) == 1)
+  stations$RATP2[i]<-temp[n]
+  stations$RATPtrafic[i]<-RATPtrafic[n,"trafic"]
+}
+
 rm(RATP)
 rm(RATPlonlat)
+rm(RATPnamelonlat)
+rm(RATPtrafic)
 
+which(stations$RATP!=stations$RATP2)
 # Récupération de la base de donnée équipement
 #################################################
 
@@ -317,13 +427,59 @@ for (i in 1:n_equip)
 }
 
 
+# les gares
+###########
 
-# Pour les variables RATP et equipements
+gares<-cbind.data.frame(
+  "nom"=c("gare d'austerlitz", "gare de l'est", "gare de lyon", "gare du nord", "bercy", "montparnasse", "st lazare" ), 
+  "lat"=c(48.84230,48.87620,48.84592, 48.87951, 48.84015, 48.84398, 48.87576),
+  "lon"=c(2.365483, 2.35791, 2.374191, 2.357285, 2.379947, 2.324265, 2.324258)) 
+
+for (i  in (1:nrow(stations)))
+{
+  stations$gare[i]<-min(distGeo(stations[i,c("lat","lon")], gares[,c("lat","lon")] ))
+}
+
+#les cinémas
+############
+
+cinemas<-read.csv("data/Cinemas.csv", sep=";")
+cinemas<-cinemas[cinemas$REGION=="ILE-DE-FRANCE",]
+cinemas<-cinemas[cinemas$CODE.DEPARTEMENT %in% c(75,92,93,94),]
+cinemas$ADRESSE<-gsub("ÈME", "EME", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("- CE 169", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("TER", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("4/6 BD BEAUMARCHAI", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("ET 1 RUE ETIENNE DOLET", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("31 BD BONNE NLL", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("SAMUEL DESBORDES", "DESBORDES", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("QUARTIER DU ", "", cinemas$ADRESSE)
+cinemas$ADRESSE<-gsub("1 RUE DE L'ORIENT-EXPRESS", "UGC Orient-Express", cinemas$ADRESSE)
+
+cinemas$lat<-0
+cinemas$lon<-0
+cinemas<-cinemas[!is.na(cinemas$ADRESSE),]
+cinemas[,c("lon","lat")]<-geocode(paste(cinemas$ADRESSE, cinemas$CODE.POSTAL))
+
+stations$cinemas<-0
+stations$cinemasfauteuils<-0
+stations$cinemasseances<-0
+for (i  in (1:nrow(stations)))
+{
+  temp<-distGeo(stations[i,c("lat","lon")], cinemas[,c("lat","lon")] )
+  n<-which(rank(temp) == 1)
+  stations$cinemas[i]<-temp[n]
+  stations$cinemasfauteuils[i]<-cinemas[n,"FAUTEUILS"]
+  stations$cinemasseances[i]<-cinemas[n,"SEANCES"]
+}
+
+
+# Pour les variables distance au bord, RATP,  equipements, gares et cinema
 # au lieu de prendre la distance, on rajoute une fonction de la distance
 # ici exp(-distance²/sigma)
 nomcol<-colnames(stations)
-first<-which(nomcol[]=="RATP")
-last<-which(nomcol[]=="Gb")
+first<-which(nomcol[]=="distbord")
+last<-which(nomcol[]=="cinemas")
 
 #la fonction de distance
 expdist <- function(x, sigma)
@@ -337,9 +493,11 @@ sigma<-100000
 for (i in first:last)
 {
   stations$temp<-0
-  names(stations)[ncol(stations)]<-paste("exp",nomcol[i])
+  names(stations)[ncol(stations)]<-paste0("exp_",nomcol[i])
   stations[,ncol(stations)]<-expdist(stations[,i],sigma)
 }
+stations$exp_RATPtrafic<-NULL
+
 
 #sortie de la matrice complète dans un csv
 ############################################

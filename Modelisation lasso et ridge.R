@@ -40,22 +40,23 @@ scale<-1
     #lasso
     ########
     Xapp<-as.matrix(data[,-1])
+    #saveRDS(Xapp, file = "Modeles/Xnonscale.RDS")
     if (scale){
-      #saveRDS(Xapp, file = "Modeles/Xnonscale.RDS")
       Xapp<-scale(Xapp)
+      #saveRDS(Xapp, file = "Modeles/Xscale.RDS")
     }
-    #saveRDS(Xapp2, file = "Modeles/Xscale.RDS")
+    
     Y<-data[,1]
     url<-paste0("Modeles/Y",k,".RDS")
     saveRDS(Y, file = url)
     
     #on fait tourner le lasso
-    lasso=cv.glmnet(Xapp,Y,family="multinomial",alpha=1)
+    lasso<-cv.glmnet(Xapp,Y,family="multinomial",alpha=1)
+    lambdachoisi<-lasso$lambda.1se
+    log(lambdachoisi)
     url<-paste0("Modeles/Lasso",k,scale,".RDS")
     saveRDS(lasso,url)
-    
-    lambdachoisi=lasso$lambda.1se
-    
+
     # #représentation des coefficients les plus importants
     # out2<-coef(lasso)
     # out22<-abs(out2[[1]])
