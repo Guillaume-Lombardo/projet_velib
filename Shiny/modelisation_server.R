@@ -2,19 +2,44 @@
 Cmodele <- reactive({
   input$Cgo
   isolate({
-  scale<-1
-  if(!input$Cscale){
-    scale<-0
-  }
-  nommodele <- paste0("../Modeles/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
-  if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")&&(input$Ckmeans %in% 5:6)){
-  modele<-readRDS(file = nommodele)
-  }
-  else
-  {
-  #pour l'instant, on n'a pas tous les modèles générés
-  modele<-readRDS(file = "../Modeles/Lasso61.RDS")
-  }
+    scale<-1
+    if(!input$Cscale){
+      scale<-0
+    }
+    nommodele <- paste0("../Modeles/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
+    # if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")){
+      modele<-readRDS(file = nommodele)
+    # }
+    # else
+    # {
+    #   #pour l'instant, on n'a pas tous les modèles générés
+    #   modele<-readRDS(file = "../Modeles/RandomForest61.RDS")
+    # }
+  })
+})
+
+Yprev <- reactive({
+  input$Cgo
+  isolate({
+    if(input$Cscale){
+      X<-readRDS(file = "../Modeles/Xscale.RDS")
+    }
+    else{
+      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+    }
+    modele<-Cmodele()
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
+      Yprev<-predict(modele, X, type="class", s="lambda.1se")
+    }
+    else if(input$Cselecmod == "RandomForest"){
+      Yprev<-modele$predicted
+    }
+    else if(input$Cselecmod %in% c("SVMRadial", "SVMLinear")){
+      Yprev<-modele$fitted
+    }
+    else{
+      Yprev<-predict(modele, X)
+    }
   })
 })
 
@@ -31,19 +56,19 @@ output$CImpvarPlot <- renderAmCharts({
   input$Cgo
   nvar<-input$Cnbvar
   isolate({
-
-
+    
+    
     if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
       #Lasso
       #représentation des coefficients les plus importants
       #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
       modele<-Cmodele()
-      out2<-coef(modele)
+      out2<-coef(modele, s="lambda.1se")
       out22<-abs(out2[[1]])
       for (i in 2:input$Ckmeans)
       {
         out22<-out22+abs(out2[[i]])
-
+        
       }
       out22<-as.data.frame(as.matrix(out22))
       out22$X2<-row.names(out22)
@@ -52,14 +77,24 @@ output$CImpvarPlot <- renderAmCharts({
       amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="somme des valeaurs absolues des beta")
+                ylab="somme des valeurs absolues des beta")
     }
-    else
-    {
+    else if(input$Cselecmod == "RandomForest"){
+      
+      out<-as.data.frame(Cmodele()$importance[order(Cmodele()$importance[,input$Ckmeans+1],decreasing = T),input$Ckmeans+1])
+      out<-cbind.data.frame(row.names(out), out) 
+      colnames(out)[]<-c("names","importance")
+      amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
+                main= "Importance des variables", 
+                xlab = "Variables explicatives", 
+                ylab="Importance")     
+
+    }
+    else {
       x= 1:5
       amHist(x, export = T)
     }
-   #fin isolate
+    #fin isolate
     
   })
 })
@@ -68,7 +103,7 @@ output$CImpvarPlot <- renderAmCharts({
 output$Cafficheimportance <- renderUI({
   input$Cgo
   isolate({
-    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")) {
       amChartsOutput("CImpvarPlot")
     }
     #fin isolate
@@ -80,22 +115,13 @@ output$Cafficheimportance <- renderUI({
 output$Ctableconfusion <- renderTable({
   input$Cgo
   isolate({
-      if(input$Cscale){
-        X<-readRDS(file = "../Modeles/Xscale.RDS")
-      }
-      else{
-        X<-readRDS(file = "../Modeles/Xnonscale.RDS")
-      }
-      url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
-      Y <- readRDS(file = url)
-      modele<-Cmodele()
-      Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
-      
-      confusion<-as.data.frame.matrix(table(Y,Yprev))
-      confusion
-      #fin isolate
+    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
+    Y <- readRDS(file = url)
+    confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    confusion
+    #fin isolate
   }) 
-
+  
 },
 rownames=T,
 colnames=T
@@ -105,18 +131,9 @@ colnames=T
 output$Ctableconfusionp <- renderTable({
   input$Cgo
   isolate({
-    if(input$Cscale){
-      X<-readRDS(file = "../Modeles/Xscale.RDS")
-    }
-    else{
-      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
-    }
     url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
-    modele<-Cmodele()
-    Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
-    
-    confusion<-as.data.frame.matrix(table(Y,Yprev))
+    confusion<-as.data.frame.matrix(table(Y,Yprev()))
     sommel<-apply(confusion, 1, sum)
     confusion<-round(100*apply(confusion, MARGIN=2, sommel, FUN="/"),digits=0)
     confusion
@@ -132,18 +149,9 @@ digits=0
 output$Cpourcentagebienclasse <- renderText({
   input$Cgo
   isolate({
-    if(input$Cscale){
-      X<-readRDS(file = "../Modeles/Xscale.RDS")
-    }
-    else{
-      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
-    }
     url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
-    modele<-Cmodele()
-    Yprev<-predict(modele, X, type="class",s=modele$lambda.1se)
-    
-    confusion<-as.data.frame.matrix(table(Y,Yprev))
+    confusion<-as.data.frame.matrix(table(Y,Yprev()))
     bienclasse<- round(100*sum(diag(as.matrix(confusion)))/sum(confusion),digits=2)
   }) 
   paste("Le pourcentage de bien classés", bienclasse, "%")
@@ -189,17 +197,10 @@ output$C_map <- renderLeaflet({
     #récupération des clusters initiaux
     url<-paste0("../Sortie/clustering_",input$Ckmeans,"_classes_mod7j.csv")
     Y<-read.csv(url, sep=";") 
-    #récupération des variables expli
-    if(input$Cscale){
-      X<-readRDS(file = "../Modeles/Xscale.RDS")
-    }
-    else{
-      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
-    }  
     #récupération du modèle
     modele<-Cmodele()
     #calcul du Y prévisionnel
-    Yprev<-predict(modele, X, type="class")
+    Yprev<-Yprev()
     
     #mise en forme de la matrice pour l'affichage de la carte
     Yprev<-as.data.frame(as.numeric(Yprev))
@@ -208,10 +209,10 @@ output$C_map <- renderLeaflet({
     #on ne retient que les stations mal prévues
     Y<-Y[Y$cluster!=Y$Yprev,]
     
-
+    
     voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
                                               function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
-     afficher_carte(data=Y,
+    afficher_carte(data=Y,
                    polygones=voronoi_custom,
                    stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
                    var_polygone="cluster",
@@ -228,13 +229,13 @@ output$CCoeffPlot <- renderAmCharts({
   nvar<-input$Cnbvar
   icluster<-input$Ccoeff
   isolate({
- 
+    
     if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
       #Lasso
       #représentation des coefficients les plus importants
       #modele<-readRDS(file = "../Modeles/Lasso61.RDS")
       modele<-Cmodele()
-      out2<-coef(modele)
+      out2<-coef(modele, s="lambda.1se")
       out22<-abs(out2[[icluster]])
       out22<-as.data.frame(as.matrix(out22))
       out22$X2<-row.names(out22)
@@ -245,8 +246,18 @@ output$CCoeffPlot <- renderAmCharts({
                 xlab = "Variables explicatives", 
                 ylab="somme des valeaurs absolues des beta")
     }
-    else
-    {
+    else if(input$Cselecmod == "RandomForest"){
+      
+      out<-as.data.frame(Cmodele()$importance[order(Cmodele()$importance[,icluster],decreasing = T),icluster])
+      out<-cbind.data.frame(row.names(out), out) 
+      colnames(out)[]<-c("names","importance")
+      amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
+                main= "Importance des variables", 
+                xlab = "Variables explicatives", 
+                ylab="Importance des variablesr")     
+      
+    }
+    else {
       x= 1:5
       amHist(x, export = T)
     }
@@ -255,11 +266,15 @@ output$CCoeffPlot <- renderAmCharts({
   })
 })
 
+output$C_numinputcoeff <- renderUI({
+  numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=input$Ckmeans)
+})
+
 #On affiche le graphique des importances si c'est possible pour le modèle retenu
 output$Caffichecoeff <- renderUI({
   input$Cgo
   isolate({
-    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")) {
+    if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")) {
       amChartsOutput("CCoeffPlot")
     }
     #fin isolate

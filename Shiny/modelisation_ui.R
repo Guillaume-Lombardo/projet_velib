@@ -6,13 +6,12 @@ fluidRow(
          wellPanel(
            
            #selection du nombre de classes
-           selectInput(inputId = "Ckmeans", label = "Nombre de classes", selected = 6,
-                       choices = 2:10), 
+           numericInput(inputId="Ckmeans", label="Nombre de classes", value=6, min = 2, max=10),
            
            #selection du modèle
            selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = "Lasso",
                        choices = c("Lasso", "Ridge", "Elasticnet",
-                                   "Random Forest", "SVM")),
+                                   "Random Forest"= "RandomForest", "SVMRadial", "SVMLinear")),
            
            # selectInput(inputId = "Cselecmod", label = "Choix du modèle", selected = 1,
            #             choices = c("Lasso" = 1, "Ridge" = 2, "Elasticnet" = 3,
@@ -72,7 +71,7 @@ fluidRow(
          hr(),
          
          #affiche la carte des stations mal classées
-         leafletOutput("C_map"),
+         leafletOutput("C_map",height=600),
          hr(),
          
          #affiche une mesure de deviance de CV 
@@ -83,8 +82,8 @@ fluidRow(
          #affiche les coefficients pour un cluster donné
          # par ordre décroissant pour lasso, ridge et elasticnet
          #nombre de variables à afficher
-         #A transforemer en uioutput pour gérer le max
-         numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=10),
+         uiOutput( "C_numinputcoeff"),
+         #numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=10),
          hr(),
          uiOutput( "Caffichecoeff"),
          hr()
