@@ -43,6 +43,23 @@ Yprev <- reactive({
   })
 })
 
+confusion <- reactive({
+  input$Cgo
+  isolate({ 
+    scale<-1
+    if(!input$Cscale){
+      scale<-0
+    }
+    if (input$CACPvarexpli == F){
+      url <- paste0("../Confusion/ClusternoACPvenoACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+    } else
+    {
+      url <- paste0("../Confusion/ClusternoACPveACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+    }
+   confusion <- readRDS(file = url)
+  }) 
+})
+
 output$Cmod1 <- renderText({
   input$Cgo
   isolate({
@@ -115,10 +132,10 @@ output$Cafficheimportance <- renderUI({
 output$Ctableconfusion <- renderTable({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
-    Y <- readRDS(file = url)
-    confusion<-as.data.frame.matrix(table(Y,Yprev()))
-    confusion
+    # url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
+    # Y <- readRDS(file = url)
+    # confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    confusion()
     #fin isolate
   }) 
   
@@ -131,9 +148,10 @@ colnames=T
 output$Ctableconfusionp <- renderTable({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
-    Y <- readRDS(file = url)
-    confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    # url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
+    # Y <- readRDS(file = url)
+    # confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    confusion<-confusion()
     sommel<-apply(confusion, 1, sum)
     confusion<-round(100*apply(confusion, MARGIN=2, sommel, FUN="/"),digits=0)
     confusion
@@ -149,9 +167,10 @@ digits=0
 output$Cpourcentagebienclasse <- renderText({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
-    Y <- readRDS(file = url)
-    confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    # url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
+    # Y <- readRDS(file = url)
+    # confusion<-as.data.frame.matrix(table(Y,Yprev()))
+    confusion<-confusion()
     bienclasse<- round(100*sum(diag(as.matrix(confusion)))/sum(confusion),digits=2)
   }) 
   paste("Le pourcentage de bien classés", bienclasse, "%")
