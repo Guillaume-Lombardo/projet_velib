@@ -13,10 +13,9 @@ shinyUI(
                source("modelisation_ui.R", local = TRUE, encoding = "UTF-8")$value
       ),
       tabPanel(title = "Comparaison des modèles",
-               fluidRow(
-                 tableOutput("tablecompmodele")
-               )
+               source("Comp_modeles_ui.R", local = TRUE, encoding = "UTF-8")$value
       )
+      
     )
   )
 )

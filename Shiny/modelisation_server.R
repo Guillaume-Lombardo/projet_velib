@@ -6,7 +6,7 @@ Cmodele <- reactive({
     if(!input$Cscale){
       scale<-0
     }
-    nommodele <- paste0("../Modeles/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
+    nommodele <- paste0("../Modeles/ClusternoACPvenoACP/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
     # if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")){
       modele<-readRDS(file = nommodele)
     # }
@@ -22,10 +22,10 @@ Yprev <- reactive({
   input$Cgo
   isolate({
     if(input$Cscale){
-      X<-readRDS(file = "../Modeles/Xscale.RDS")
+      X<-readRDS(file = "../Modeles/ClusternoACPvenoACP/Xscale.RDS")
     }
     else{
-      X<-readRDS(file = "../Modeles/Xnonscale.RDS")
+      X<-readRDS(file = "../Modeles/ClusternoACPvenoACP/Xnonscale.RDS")
     }
     modele<-Cmodele()
     if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
@@ -115,7 +115,7 @@ output$Cafficheimportance <- renderUI({
 output$Ctableconfusion <- renderTable({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
+    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
     confusion<-as.data.frame.matrix(table(Y,Yprev()))
     confusion
@@ -131,7 +131,7 @@ colnames=T
 output$Ctableconfusionp <- renderTable({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
+    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
     confusion<-as.data.frame.matrix(table(Y,Yprev()))
     sommel<-apply(confusion, 1, sum)
@@ -149,7 +149,7 @@ digits=0
 output$Cpourcentagebienclasse <- renderText({
   input$Cgo
   isolate({
-    url<-paste0("../Modeles/Y",input$Ckmeans,".RDS")
+    url<-paste0("../Modeles/ClusternoACPvenoACP/Y",input$Ckmeans,".RDS")
     Y <- readRDS(file = url)
     confusion<-as.data.frame.matrix(table(Y,Yprev()))
     bienclasse<- round(100*sum(diag(as.matrix(confusion)))/sum(confusion),digits=2)
@@ -214,7 +214,7 @@ output$C_map <- renderLeaflet({
                                               function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
     afficher_carte(data=Y,
                    polygones=voronoi_custom,
-                   stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+                   stations=read.csv(file="../Sortie/stations_sirene_voronoi500_densite.csv")[,2:6],
                    var_polygone="cluster",
                    var_point="Yprev",
                    lbl_var_polygone="cluster initial",
