@@ -1,5 +1,5 @@
-#création du jeu de variable explicative final
-#en fusionnant les différentes sources
+#cr?ation du jeu de variable explicative final
+#en fusionnant les diff?rentes sources
 
 var_expli1<-read.csv("Sortie/Jeuvarexpli.csv", sep=",")
 var_expli1$X<-NULL
@@ -19,17 +19,15 @@ var_expli2$name<-NULL
 var_expli3<-read.csv("Sortie/stations_sirene_voronoi500_densite.csv", sep=",")
 var_expli3$X<-NULL
 var_expli3$name<-NULL
-# var_expli3$aire<-NULL
-# var_expli3$address<-NULL
-# var_expli3$lon<-NULL
-# var_expli3$lat<-NULL
+var_expli3$aire<-NULL
+
 
 var_expli<-merge(x=var_expli1, y=var_expli2, by="number")
-# var_expli<-merge(x=var_expli, y=var_expli3, by="number")
+var_expli<-merge(x=var_expli, y=var_expli3, by="number")
 write.csv(var_expli, file = "Sortie/Jeuvarexplifinal.csv")
 
 
-# Création d'un jeu de variables explicatives après ACP
+# Cr?ation d'un jeu de variables explicatives apr?s ACP
 library(FactoMineR)
 library(corrplot)
 
@@ -38,7 +36,7 @@ Mcor<-cor(var_expli[,2:61])
 corrplot.mixed(Mcor)
 corrplot(Mcor, type="upper")
 
-#réalisation de l'ACP
+#r?alisation de l'ACP
 var_expli$bonus<-as.numeric(var_expli$bonus)
 res.pca = PCA(var_expli[,-1], scale.unit=TRUE,ncp=(ncol(var_expli)-1) ,graph=T, axes=c(1,2))
 
