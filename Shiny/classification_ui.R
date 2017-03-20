@@ -30,7 +30,8 @@ fluidRow(
          # textOutput("Amod1"),
          amChartsOutput('Aprofil_classe'),
          amChartsOutput('Adetail_classe'),
-         leafletOutput('A_map2')
+         leafletOutput('A_map2', height=600),
+         br(), br()
   )
 )
 
