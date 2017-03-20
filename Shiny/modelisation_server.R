@@ -275,7 +275,7 @@ output$C_map <- renderLeaflet({
                                               function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
     afficher_carte(data=Y,
                    polygones=voronoi_custom,
-                   stations=read.csv(file="../Sortie/stations_sirene_voronoi500_densite.csv")[,2:6],
+                   stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone="cluster",
                    var_point="Yprev",
                    lbl_var_polygone="cluster initial",
