@@ -1,31 +1,8 @@
-library(shiny)
-library(rAmCharts)
-library(jsonlite)
-library(curl)
-library(cluster)
-library(RColorBrewer)
-library(RgoogleMaps)
-library(reshape2)
-library(plyr)
-library(dplyr)
-library(grid)
-library(gridExtra)
-library(gridGraphics)
-library(glmnet)
-library(caret)
-library(raster)
-library(maptools)
-library(ggmap)
-library(googleway)
-library(deldir)
-library(sp)
-# devtools::install_github("rstudio/leaflet")
-library(leaflet)
-library(rgeos)
-library(tibble)
-library(crosstalk)
-library(viridis)
-library(heatmaply)
+require(pacman)
+pacman::p_load(shiny, foreach, lattice, ggplot2, plotly, rAmCharts, jsonlite, curl, 
+							 cluster, RColorBrewer, RgoogleMaps, reshape2, plyr, dplyr, grid, 
+							 gridExtra, gridGraphics, glmnet, caret, raster, maptools, ggmap, 
+							 googleway, deldir, sp, leaflet, rgeos, tibble, crosstalk, viridis, heatmaply, DT)
 
 
 
