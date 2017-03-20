@@ -144,22 +144,22 @@ for (k in 2:10)
 
     #SVM linear
     #############
-    paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
-
-    SVM_lin <- train(x = Xapp, y = Y, method = 'svmLinear',
-                     trControl=trainControl(method="cv",number=10,search="grid"),
-                     tuneGrid=paramgrid)
-    bestTune <- SVM_lin$bestTune
-    SVM_lin_opt <- svm(x = Xapp, y = Y,
-                       cost=bestTune[1,1])
-
-    # SVM_lin<-tune.svm(x = Xapp, y = Y,kernel="linear",scale=FALSE,cost=10^(-3:1))
-    # SVM_lin_opt<-SVM_lin$best.model
-    url<-paste0(urlclusteretvarexpli,"/SVMLinear",k,scale,".RDS")
-    saveRDS(SVM_lin_opt,url)
-    Yprev<-SVM_lin_opt$fitted
-    confusionSVMlin<-as.data.frame.matrix(table(Y,Yprev))
-    biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
+    # paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
+    # 
+    # SVM_lin <- train(x = Xapp, y = Y, method = 'svmLinear',
+    #                  trControl=trainControl(method="cv",number=10,search="grid"),
+    #                  tuneGrid=paramgrid)
+    # bestTune <- SVM_lin$bestTune
+    # SVM_lin_opt <- svm(x = Xapp, y = Y,
+    #                    cost=bestTune[1,1])
+    # 
+    # # SVM_lin<-tune.svm(x = Xapp, y = Y,kernel="linear",scale=FALSE,cost=10^(-3:1))
+    # # SVM_lin_opt<-SVM_lin$best.model
+    # url<-paste0(urlclusteretvarexpli,"/SVMLinear",k,scale,".RDS")
+    # saveRDS(SVM_lin_opt,url)
+    # Yprev<-SVM_lin_opt$fitted
+    # confusionSVMlin<-as.data.frame.matrix(table(Y,Yprev))
+    # biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
 
     
   }

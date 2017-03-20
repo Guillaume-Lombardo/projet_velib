@@ -139,44 +139,44 @@ for (k in 6:6)
                          cost=bestTune[1,2],gamma = bestTune[1,1])
       YprevSVM_rad<-c(YprevSVM_rad,predict(SVM_rad_opt, Xest, type="class"))
    
-      #SVM polynomial
+      #SVM linear
       #############
-      paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
-
-      SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
-                       trControl=trainControl(method="cv",number=10,search="grid"),
-                       tuneGrid=paramgrid)
-      bestTune <- SVM_lin$bestTune
-      SVM_lin_opt <- svm(x = Xapp, y = Yapp,
-                         cost=bestTune[1,1])
-
-      YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
+      # paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
+      # 
+      # SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
+      #                  trControl=trainControl(method="cv",number=10,search="grid"),
+      #                  tuneGrid=paramgrid)
+      # bestTune <- SVM_lin$bestTune
+      # SVM_lin_opt <- svm(x = Xapp, y = Yapp,
+      #                    cost=bestTune[1,1])
+      # 
+      # YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
 
       
     }
-    confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))
+    confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))[,paste0(1:k)]
     biensclasses[1+scale,k-1]<-round(100*sum(diag(as.matrix(confusionlasso)))/sum(confusionlasso),digits=1)
     saveRDS(confusionlasso, file = paste0(urlclusteretvarexpli,"/confusionLasso",k,scale,".RDS"))
 
-    confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))
+    confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))[,paste0(1:k)]
     biensclasses[3+scale, k-1]<-round(100*sum(diag(as.matrix(confusionridge)))/sum(confusionridge),digits=1)
     saveRDS(confusionridge, file = paste0(urlclusteretvarexpli,"/confusionRidge",k,scale,".RDS"))
 
-    confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))
+    confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))[,paste0(1:k)]
     biensclasses[5+scale,k-1]<-round(100*sum(diag(as.matrix(confusionelasticnet)))/sum(confusionelasticnet),digits=1)
     saveRDS(confusionelasticnet, file = paste0(urlclusteretvarexpli,"/confusionElasticnet",k,scale,".RDS"))
 
-    confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))
+    confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))[,paste0(1:k)]
     biensclasses[7+scale,k-1]<-round(100*sum(diag(as.matrix(confusionRF)))/sum(confusionRF),digits=1)
     saveRDS(confusionRF, file = paste0(urlclusteretvarexpli,"/confusionRandomForest",k,scale,".RDS"))
 
-    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))
+    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))[,paste0(1:k)]
     biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
     saveRDS(confusionSVMrad, file = paste0(urlclusteretvarexpli,"/confusionSVMRadial",k,scale,".RDS"))
 
-    confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))
-    biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
-    saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
+    # confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))[,paste0(1:k)]
+    # biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
+    # saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
   }
   
 }
