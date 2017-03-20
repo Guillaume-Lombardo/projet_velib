@@ -25,6 +25,7 @@ library(rgeos)
 library(tibble)
 library(crosstalk)
 library(viridis)
+library(heatmaply)
 
 
 
@@ -110,3 +111,63 @@ eval(parse(text = paste("p75_2colonnes_",1:10," <- readRDS(",
 
 liste_variables_exp <- read.csv("../Sortie/liste_variables_exp.csv",sep=';')
 voronoi500 <- readRDS("./voronoi500.rds")
+
+
+
+clustering_2_classes_mod7j <- read.csv("../Sortie/clustering_2_classes_mod7j.csv",sep=";")
+clustering_3_classes_mod7j <- read.csv("../Sortie/clustering_3_classes_mod7j.csv",sep=";")
+clustering_4_classes_mod7j <- read.csv("../Sortie/clustering_4_classes_mod7j.csv",sep=";")
+clustering_5_classes_mod7j <- read.csv("../Sortie/clustering_5_classes_mod7j.csv",sep=";")
+clustering_6_classes_mod7j <- read.csv("../Sortie/clustering_6_classes_mod7j.csv",sep=";")
+clustering_7_classes_mod7j <- read.csv("../Sortie/clustering_7_classes_mod7j.csv",sep=";")
+clustering_8_classes_mod7j <- read.csv("../Sortie/clustering_8_classes_mod7j.csv",sep=";")
+clustering_9_classes_mod7j <- read.csv("../Sortie/clustering_9_classes_mod7j.csv",sep=";")
+clustering_10_classes_mod7j <- read.csv("../Sortie/clustering_10_classes_mod7j.csv",sep=";")
+colnames(clustering_2_classes_mod7j)[2] <- "cluster_2"
+colnames(clustering_3_classes_mod7j)[2] <- "cluster_3"
+colnames(clustering_4_classes_mod7j)[2] <- "cluster_4"
+colnames(clustering_5_classes_mod7j)[2] <- "cluster_5"
+colnames(clustering_6_classes_mod7j)[2] <- "cluster_6"
+colnames(clustering_7_classes_mod7j)[2] <- "cluster_7"
+colnames(clustering_8_classes_mod7j)[2] <- "cluster_8"
+colnames(clustering_9_classes_mod7j)[2] <- "cluster_9"
+colnames(clustering_10_classes_mod7j)[2] <- "cluster_10"
+
+stations1199 <- read.csv("../Sortie/stations1199.csv")
+
+zzz <- read.csv("../Sortie/Jeuvarexplifinal.csv")
+rownames(zzz) <- zzz$number
+zzz <- join_all(list(zzz,
+                     clustering_2_classes_mod7j,
+                     clustering_3_classes_mod7j,
+                     clustering_4_classes_mod7j,
+                     clustering_5_classes_mod7j,
+                     clustering_6_classes_mod7j,
+                     clustering_7_classes_mod7j,
+                     clustering_8_classes_mod7j,
+                     clustering_9_classes_mod7j,
+                     clustering_10_classes_mod7j), by='number')
+rownames(zzz) <- zzz$number
+zzz$X <- NULL
+zzz$lat <- stations1199$lat
+zzz$lon <- stations1199$lon
+
+spdf <- SpatialPolygonsDataFrame(voronoi500, zzz)
+
+hm <- readRDS("../Sortie/hm.RDS")
+listvar <- hm$x$layout$xaxis$ticktext
+
+delaunay <- deldir(stations1199$lon2,stations1199$lat)$delsgs[,5:6]
+tmp <- stations1199
+tmp$ind1 <- 1:nrow(tmp)
+tmp$number1<- tmp$number
+delaunay <- merge(tmp[,8:9],delaunay)
+tmp <- stations1199
+tmp$ind2 <- 1:nrow(tmp)
+tmp$number2<- tmp$number
+delaunay <- merge(tmp[,8:9],delaunay)
+tmp <- delaunay[,c(2,4)]
+colnames(tmp) <- c("number1","number2")
+delaunay <- rbind(delaunay[,c(2,4)],tmp)
+colnames(delaunay) <- c("number","number2")
+rm(tmp)
