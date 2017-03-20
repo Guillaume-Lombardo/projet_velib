@@ -81,7 +81,7 @@ output$A_map2 <- renderLeaflet({
   																									 function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
   afficher_carte(data=data_carte,
                  polygones=voronoi_custom,
-                 stations=read.csv(file="../Sortie/stations_sirene_voronoi500.csv")[,2:6],
+                 stations=read.csv(file="../Sortie/stations1199.csv"),
                  var_polygone='couleur_poly',
                  lbl_var_polygone='cluster')
 
