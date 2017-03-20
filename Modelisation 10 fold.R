@@ -139,18 +139,18 @@ for (k in 6:6)
                          cost=bestTune[1,2],gamma = bestTune[1,1])
       YprevSVM_rad<-c(YprevSVM_rad,predict(SVM_rad_opt, Xest, type="class"))
    
-      #SVM polynomial
+      #SVM linear
       #############
-      paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
-
-      SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
-                       trControl=trainControl(method="cv",number=10,search="grid"),
-                       tuneGrid=paramgrid)
-      bestTune <- SVM_lin$bestTune
-      SVM_lin_opt <- svm(x = Xapp, y = Yapp,
-                         cost=bestTune[1,1])
-
-      YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
+      # paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
+      # 
+      # SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
+      #                  trControl=trainControl(method="cv",number=10,search="grid"),
+      #                  tuneGrid=paramgrid)
+      # bestTune <- SVM_lin$bestTune
+      # SVM_lin_opt <- svm(x = Xapp, y = Yapp,
+      #                    cost=bestTune[1,1])
+      # 
+      # YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
 
       
     }
@@ -174,9 +174,9 @@ for (k in 6:6)
     biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
     saveRDS(confusionSVMrad, file = paste0(urlclusteretvarexpli,"/confusionSVMRadial",k,scale,".RDS"))
 
-    confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))[,paste0(1:k)]
-    biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
-    saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
+    # confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))[,paste0(1:k)]
+    # biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
+    # saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
   }
   
 }
