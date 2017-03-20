@@ -32,7 +32,7 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
   eval(parse(text = paste0("data_series <- merge(x = data_series,",
                            "y = station[,c('time',liste_stations_classe)],",
                            "by.x = 'time',by.y = 'time')")))
-
+  
   # lw <- ifelse((substr(names(data_series)[names(data_series)!='time'],1,1)=='P') & 
   #                substr(names(data_series)[names(data_series)!='time'],1,3) not %in% c('P25','P75')),3,1)
   
@@ -114,26 +114,38 @@ output$A_map2 <- renderLeaflet({
                    stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone='couleur_poly',
                    lbl_var_polygone='cluster') 
-    })
+  })
 })
 
 output$Atable_taille <- renderTable({
   input$AmiseAjour
   isolate({
-    print(str(cluster[[input$Anb_cluster]]))
+    # browser()
     if (input$AclusterACP){
-      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster2[[input$Anb_cluster]]$size)
+      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster2[[as.numeric(input$Anb_cluster)]]$size)
     } else {
-      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster[[input$Anb_cluster]]$size)
+      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster[[as.numeric(input$Anb_cluster)]]$size)
     }
-    
-    
-    print(res)
     res
-    
   }) 
   
 },
-rownames=T,
+rownames=F,
 colnames=T
 )
+
+output$Agraphe_variance <- renderPlot({
+    if (input$AclusterACP){
+      serie <- sapply(1:10, function(.x) cluster2[[.x]]$betweenss / 
+                        cluster2[[.x]]$totss)
+      print(plot(1:10,serie, type='l', 
+                 xlab = 'nombre de classe', ylim=c(0,1),
+                 main = 'variance intra'))
+    } else {
+      serie <- sapply(1:10, function(.x) cluster[[.x]]$betweenss / 
+                        cluster[[.x]]$totss)
+      print(plot(1:10,serie, type='l', 
+                 xlab = 'nombre de classe', ylim=c(0,1),
+                 main = 'variance intra'))
+    }
+})

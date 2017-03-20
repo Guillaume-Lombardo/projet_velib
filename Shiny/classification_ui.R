@@ -23,7 +23,8 @@ fluidRow(
                        choices = 1:10),
            # uiOutput('Aui_select_classe_detail'),
            actionButton('AmiseAjour','activation !')
-         )
+         ),
+         plotOutput('Agraphe_variance')
   ),
   # deuxieme colonne avec les sortiesw
   column(width = 10, 
