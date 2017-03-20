@@ -2,13 +2,29 @@
 Cmodele <- reactive({
   input$Cgo
   isolate({
+    if (input$CACPvarexpli == F){
+      if (input$CACPcluster == F){
+        url <- paste0("../Modeles/ClusternoACPvenoACP/")
+      }else
+      {
+        url <- paste0("../Modeles/ClusterACPvenoACP/")
+      }
+    } else
+    {
+      if (input$CACPcluster == F){
+        url <- paste0("../Modeles/ClusternoACPveACP/")
+      }else
+      {
+        url <- paste0("../Modeles/ClusterACPveACP/")
+      }    
+    }
     scale<-1
     if(!input$Cscale){
       scale<-0
     }
-    nommodele <- paste0("../Modeles/ClusternoACPvenoACP/",input$Cselecmod, input$Ckmeans ,scale,".RDS")
+    nommodele <- paste0(url,input$Cselecmod, input$Ckmeans ,scale,".RDS")
     # if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")){
-      modele<-readRDS(file = nommodele)
+    modele<-readRDS(file = nommodele)
     # }
     # else
     # {
@@ -21,11 +37,27 @@ Cmodele <- reactive({
 Yprev <- reactive({
   input$Cgo
   isolate({
+    if (input$CACPvarexpli == F){
+      if (input$CACPcluster == F){
+        url <- paste0("../Modeles/ClusternoACPvenoACP/")
+      }else
+      {
+        url <- paste0("../Modeles/ClusterACPvenoACP/")
+      }
+    } else
+    {
+      if (input$CACPcluster == F){
+        url <- paste0("../Modeles/ClusternoACPveACP/")
+      }else
+      {
+        url <- paste0("../Modeles/ClusterACPveACP/")
+      }    
+    }
     if(input$Cscale){
-      X<-readRDS(file = "../Modeles/ClusternoACPvenoACP/Xscale.RDS")
+      X<-readRDS(file = paste0(url,"Xscale.RDS"))
     }
     else{
-      X<-readRDS(file = "../Modeles/ClusternoACPvenoACP/Xnonscale.RDS")
+      X<-readRDS(file = paste0(url,"Xnonscale.RDS"))
     }
     modele<-Cmodele()
     if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet")){
@@ -51,12 +83,22 @@ confusion <- reactive({
       scale<-0
     }
     if (input$CACPvarexpli == F){
-      url <- paste0("../Confusion/ClusternoACPvenoACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      if (input$CACPcluster == F){
+        url <- paste0("../Confusion/ClusternoACPvenoACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      }else
+      {
+        url <- paste0("../Confusion/ClusterACPvenoACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      }
     } else
     {
-      url <- paste0("../Confusion/ClusternoACPveACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      if (input$CACPcluster == F){
+        url <- paste0("../Confusion/ClusternoACPveACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      }else
+      {
+        url <- paste0("../Confusion/ClusterACPveACP/confusion", input$Cselecmod, input$Ckmeans, scale, ".RDS")
+      }    
     }
-   confusion <- readRDS(file = url)
+    confusion <- readRDS(file = url)
   }) 
 })
 
@@ -94,7 +136,8 @@ output$CImpvarPlot <- renderAmCharts({
       amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="somme des valeurs absolues des beta")
+                ylab="somme des valeurs absolues des beta", 
+                precision=2)
     }
     else if(input$Cselecmod == "RandomForest"){
       
@@ -104,8 +147,9 @@ output$CImpvarPlot <- renderAmCharts({
       amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="Importance")     
-
+                ylab="Importance", 
+                precision=2)     
+      
     }
     else {
       x= 1:5
@@ -226,14 +270,14 @@ output$C_map <- renderLeaflet({
     colnames(Yprev)[1]<-"Yprev"
     Y<-cbind.data.frame(Y, Yprev)
     #on ne retient que les stations mal prévues
-    Y<-Y[Y$cluster!=Y$Yprev,]
+    Y$cluster[Y$cluster==Y$Yprev] <- NA
     
     
-    voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
-                                              function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
+    # voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
+    #                                           function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
     afficher_carte(data=Y,
-                   polygones=voronoi_custom,
-                   stations=read.csv(file="../Sortie/stations_sirene_voronoi500_densite.csv")[,2:6],
+                   polygones=voronoi500,
+                   stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone="cluster",
                    var_point="Yprev",
                    lbl_var_polygone="cluster initial",
@@ -263,7 +307,8 @@ output$CCoeffPlot <- renderAmCharts({
       amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="somme des valeaurs absolues des beta")
+                ylab="somme des valeaurs absolues des beta", 
+                precision=2)
     }
     else if(input$Cselecmod == "RandomForest"){
       
@@ -273,7 +318,8 @@ output$CCoeffPlot <- renderAmCharts({
       amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="Importance des variablesr")     
+                ylab="Importance des variablesr", 
+                precision=2)     
       
     }
     else {
@@ -286,7 +332,9 @@ output$CCoeffPlot <- renderAmCharts({
 })
 
 output$C_numinputcoeff <- renderUI({
-  numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=input$Ckmeans)
+  if (input$Cselecmod %in% c("Lasso", "Ridge", "Elasticnet", "RandomForest")) {
+    numericInput(inputId="Ccoeff", label="Choix du cluster", value=1, min = 1, max=input$Ckmeans)
+  }
 })
 
 #On affiche le graphique des importances si c'est possible pour le modèle retenu

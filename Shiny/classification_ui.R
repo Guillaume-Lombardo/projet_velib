@@ -4,11 +4,14 @@ fluidRow(
   column(width = 2, 
          wellPanel(
            
-           #selection du nombre de classes
+           
+           # Faire une ACP sur les profils temporel avant clustering ou pas !
+           checkboxInput(inputId = "AclusterACP", label = "ACP sur les prfils temporels", value=F),
+           # selection du nombre de classes
            selectInput(inputId = 'Anb_cluster', label = 'Nombre de classes', selected = 6,
                        choices = 2:10), 
            
-           #selection du modèle
+           # selection du modèle
            sliderInput(inputId = 'Anb_courbe', 
                        label = 'nombre de variable à afficher par classe', 
                        value = 5,
@@ -20,14 +23,25 @@ fluidRow(
                        choices = 1:10),
            # uiOutput('Aui_select_classe_detail'),
            actionButton('AmiseAjour','activation !')
-         )
+         ),
+         plotOutput('Agraphe_variance')
   ),
   # deuxieme colonne avec les sortiesw
-  column(width = 8, 
-         textOutput("Amod1"),
-         amChartsOutput('Aprofil_classe'),
-         amChartsOutput('Adetail_classe'),
-         leafletOutput('A_map2')
+  column(width = 10, 
+         # textOutput("Amod1"),
+         fluidRow(
+           column(width = 9,
+                  amChartsOutput('Aprofil_classe'),
+                  br(),
+                  amChartsOutput('Adetail_classe')),
+           column(width = 1,
+                  tags$h4("Taille des clusters"),
+                  tableOutput('Atable_taille'))
+         ),
+         fluidRow(
+         leafletOutput('A_map2', height=600),
+         br(), br()
+         )
   )
 )
 

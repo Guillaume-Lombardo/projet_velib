@@ -198,7 +198,7 @@ eval(parse(text = paste0('rownames(p10_2colonnes_',1:10,') <- NULL')))
 
 eval(parse(text = paste0('p25_2colonnes_',1:10,' <- data.frame(t(profil2_p25_classe[[',1:10,']][,2:505]))')))
 eval(parse(text = paste0('names(p25_2colonnes_',1:10,') <- paste0("P",seq_along(names(p25_2colonnes_',1:10,')),"_p25")')))
-eval(parse(text = paste0('p25_colonnes_',1:10,'$time <- pre_dates')))
+eval(parse(text = paste0('p25_2colonnes_',1:10,'$time <- pre_dates')))
 eval(parse(text = paste0('rownames(p25_2colonnes_',1:10,') <- NULL')))
 
 eval(parse(text = paste0('p50_2colonnes_',1:10,' <- data.frame(t(profil2_p50_classe[[',1:10,']][,2:505]))')))

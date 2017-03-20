@@ -17,6 +17,9 @@ fluidRow(
            #             choices = c("Lasso" = 1, "Ridge" = 2, "Elasticnet" = 3,
            #                         "Random Forest" = 4, "SVM"=5)),
            
+           #Proposition de faire une ACP sur les profils pour faire les clusters
+           checkboxInput(inputId = "CACPcluster", label = "ACP pour construire les clusters ?", value=F), 
+           
            #Proposition de faire une ACP sur les variables explicatives
            checkboxInput(inputId = "CACPvarexpli", label = "ACP sur les variables explicatives ?", value=F), 
            
