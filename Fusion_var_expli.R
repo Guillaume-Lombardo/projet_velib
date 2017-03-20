@@ -45,9 +45,10 @@ var_expli_ACP<-as.data.frame(cbind(var_expli[,1],res.pca$ind$coord))
 colnames(var_expli_ACP)[1]<-"number"
 
 limcos=0.2
-layout(matrix(1:3,nrow=1,byrow=F))
+layout(matrix(1:1,nrow=1,byrow=F))
 plot.PCA(res.pca, axes=c(1, 2), choix="var", lim.cos2.var=limcos)
 plot.PCA(res.pca, axes=c(3, 4), choix="var", lim.cos2.var=limcos)
 plot.PCA(res.pca, axes=c(5, 6), choix="var", lim.cos2.var=limcos)
 
+colnames(var_expli_ACP)[2:11]<-c("densité pop", "densité entreprises", "centralité", "densité pop par âge", "commerces", "Restau et cité U", "commerces", "effectif salarié", "RATP", "eff 0 et eff 03")
 write.csv(var_expli_ACP, file = "Sortie/JeuvarexplifinalACP.csv")

@@ -66,10 +66,11 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
   }
   if (!missing(var_point)) 
   {
+    eval(parse(text = paste('palll1 <- leaflet::colorNumeric("Accent",domain=zzz$',var_polygone,',reverse=T)',sep = '')))
     eval(parse(text = paste('palll2 <- leaflet::colorNumeric("Accent",domain=zzz$',var_point,',reverse=T)',sep = '')))
-    parse_circles2 <- paste('addCircles(data=stations, lat=stations$lat, lng=stations$lon, radius=5,color=palll2(zzz$',var_point,')) %>%',sep = '')
+    parse_circles2 <- paste('addCircles(data=stations, lat=stations$lat, lng=stations$lon, radius=5,opacity=1,color=palll2(zzz$',var_point,')) %>%',sep = '')
     parse_legend2 <- paste(' %>% addLegend(position ="topright",pal=palll2,values=zzz$',var_point,',title="',lbl_var_point,'")',sep = '')
-    parse_tout2 <- paste(parse_leaflet,parse_tiles,parse_view,parse_circles2,parse_scale,parse_minipap,parse_polygon, parse_legend,parse_legend2)
+    parse_tout2 <- paste(parse_leaflet,parse_tiles,parse_view,parse_scale,parse_minipap,parse_polygon,parse_circles2, parse_legend,parse_legend2)
     carte <- eval(parse(text = parse_tout2))
     return(carte)
   } 
