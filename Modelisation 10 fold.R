@@ -30,7 +30,10 @@ if (ACPcluster==0){
 # qui produit tous les modèles
 # et qui génère la table des biens classés par modèles
 
+# K de la CV si hors de la boucle
 K<-1
+
+# nombre de cluster si hors de la boucle
 k<-6
 
 #est ce qu'on scale les variables ?
@@ -50,9 +53,9 @@ set.seed(4242)
 ECHANTILLON <- sample(rep(c(1:10),round(1199)/10+1))[1:1199]
 
 
-for (k in 2:10)
+for (k in 6:6)
 {
-  for (scale in 0:1)
+  for (scale in 1:1)
   {
     Yprevlasso<-c()
     Yprevridge<-c()
@@ -106,74 +109,74 @@ for (k in 2:10)
       ######
       lasso<-cv.glmnet(Xapp,Yapp,family="multinomial",alpha=1)
       Yprevlasso<-c(Yprevlasso,predict(lasso, Xest, type="class",s=lasso$lambda.1se))
-  
+
       #RIDGE
       ######
       ridge=cv.glmnet(Xapp,Yapp,family="multinomial",alpha=0)
       Yprevridge<-c(Yprevridge,predict(ridge, Xest, type="class"))
-  
-      
+
+
       #ELASTICNET
       ############
       elasticnet=cv.glmnet(Xapp,Yapp,family="multinomial",alpha=0)
       Yprevelasticnet<-c(Yprevelasticnet,predict(elasticnet, Xest, type="class"))
-    
+
       #RANDOMFOREST
       #############
-      randomForest <- randomForest(x=Xapp, y=Yapp, method = 'rf',importance=TRUE)   
+      randomForest <- randomForest(x=Xapp, y=Yapp, method = 'rf',importance=TRUE)
       Yprevrandomforest<-c(Yprevrandomforest,predict(randomForest, Xest, type="class"))
  
       
       #SVM radial
       #############    
-      # paramgrid <- data.frame(cbind(sigma=rep(10^(-2:2),times=5),C=rep(10^(-3:1),each=5)))
-      # 
-      # SVM_rad <- train(x = Xapp, y = Yapp, method = 'svmRadial',
-      #                  trControl=trainControl(method="cv",number=10,search="grid"),
-      #                  tuneGrid=paramgrid)
-      # bestTune <- SVM_rad$bestTune
-      # SVM_rad_opt <- svm(x = Xapp, y = Yapp, 
-      #                    cost=bestTune[1,2],gamma = bestTune[1,1])
-      # YprevSVM_rad<-c(YprevSVM_rad,predict(SVM_rad_opt, Xest, type="class"))
+      paramgrid <- data.frame(cbind(sigma=rep(10^(-2:2),times=5),C=rep(10^(-3:1),each=5)))
+
+      SVM_rad <- train(x = Xapp, y = Yapp, method = 'svmRadial',
+                       trControl=trainControl(method="cv",number=10,search="grid"),
+                       tuneGrid=paramgrid)
+      bestTune <- SVM_rad$bestTune
+      SVM_rad_opt <- svm(x = Xapp, y = Yapp,
+                         cost=bestTune[1,2],gamma = bestTune[1,1])
+      YprevSVM_rad<-c(YprevSVM_rad,predict(SVM_rad_opt, Xest, type="class"))
    
       #SVM polynomial
-      #############  
-      # paramgrid = data.frame(C=c(seq(0.01,1,by=0.05),1))
-      # 
-      # SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
-      #                  trControl=trainControl(method="cv",number=10,search="grid"),
-      #                  tuneGrid=paramgrid)
-      # bestTune <- SVM_lin$bestTune
-      # SVM_lin_opt <- svm(x = Xapp, y = Yapp, 
-      #                    cost=bestTune[1,1])
-      # 
-      # YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
-    
+      #############
+      paramgrid = data.frame(C=c(seq(0.01,1,by=0.05),1))
+
+      SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
+                       trControl=trainControl(method="cv",number=10,search="grid"),
+                       tuneGrid=paramgrid)
+      bestTune <- SVM_lin$bestTune
+      SVM_lin_opt <- svm(x = Xapp, y = Yapp,
+                         cost=bestTune[1,1])
+
+      YprevSVM_lin<-c(YprevSVM_lin,predict(SVM_lin_opt, Xest, type="class"))
+
       
     }
     confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))
     biensclasses[1+scale,k-1]<-round(100*sum(diag(as.matrix(confusionlasso)))/sum(confusionlasso),digits=1)
     saveRDS(confusionlasso, file = paste0(urlclusteretvarexpli,"/confusionLasso",k,scale,".RDS"))
-    
+
     confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))
     biensclasses[3+scale, k-1]<-round(100*sum(diag(as.matrix(confusionridge)))/sum(confusionridge),digits=1)
     saveRDS(confusionridge, file = paste0(urlclusteretvarexpli,"/confusionRidge",k,scale,".RDS"))
-    
+
     confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))
     biensclasses[5+scale,k-1]<-round(100*sum(diag(as.matrix(confusionelasticnet)))/sum(confusionelasticnet),digits=1)
     saveRDS(confusionelasticnet, file = paste0(urlclusteretvarexpli,"/confusionElasticnet",k,scale,".RDS"))
-    
+
     confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))
     biensclasses[7+scale,k-1]<-round(100*sum(diag(as.matrix(confusionRF)))/sum(confusionRF),digits=1)
     saveRDS(confusionRF, file = paste0(urlclusteretvarexpli,"/confusionRandomForest",k,scale,".RDS"))
-    
-    # confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))
-    # biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
-    # saveRDS(confusionSVMrad, file = paste0("Confusion/confusionSVMRadial",k,scale,".RDS"))
-    # 
-    # confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))
-    # biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
-    # saveRDS(confusionSVMlin, file = paste0("Confusion/confusionSVMLinear",k,scale,".RDS"))
+
+    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))
+    biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
+    saveRDS(confusionSVMrad, file = paste0(urlclusteretvarexpli,"/confusionSVMRadial",k,scale,".RDS"))
+
+    confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))
+    biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
+    saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
   }
   
 }
