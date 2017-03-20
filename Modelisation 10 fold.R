@@ -129,8 +129,8 @@ for (k in 6:6)
       
       #SVM radial
       #############    
-      paramgrid <- data.frame(cbind(sigma=rep(10^(-2:2),times=5),C=rep(10^(-3:1),each=5)))
-
+      paramgrid <- data.frame(cbind(sigma=rep(10^(-2:1),times=5),C=rep(10^(-3:1),each=4)))
+      
       SVM_rad <- train(x = Xapp, y = Yapp, method = 'svmRadial',
                        trControl=trainControl(method="cv",number=10,search="grid"),
                        tuneGrid=paramgrid)
@@ -141,7 +141,7 @@ for (k in 6:6)
    
       #SVM polynomial
       #############
-      paramgrid = data.frame(C=c(seq(0.01,1,by=0.05),1))
+      paramgrid = data.frame(C=c(seq(0.01,0.1,by=0.01),seq(0.2,1,by=0.1)))
 
       SVM_lin <- train(x = Xapp, y = Yapp, method = 'svmLinear',
                        trControl=trainControl(method="cv",number=10,search="grid"),
