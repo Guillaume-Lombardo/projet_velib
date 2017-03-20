@@ -154,27 +154,27 @@ for (k in 6:6)
 
       
     }
-    confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))
+    confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))[,paste0(1:k)]
     biensclasses[1+scale,k-1]<-round(100*sum(diag(as.matrix(confusionlasso)))/sum(confusionlasso),digits=1)
     saveRDS(confusionlasso, file = paste0(urlclusteretvarexpli,"/confusionLasso",k,scale,".RDS"))
 
-    confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))
+    confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))[,paste0(1:k)]
     biensclasses[3+scale, k-1]<-round(100*sum(diag(as.matrix(confusionridge)))/sum(confusionridge),digits=1)
     saveRDS(confusionridge, file = paste0(urlclusteretvarexpli,"/confusionRidge",k,scale,".RDS"))
 
-    confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))
+    confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))[,paste0(1:k)]
     biensclasses[5+scale,k-1]<-round(100*sum(diag(as.matrix(confusionelasticnet)))/sum(confusionelasticnet),digits=1)
     saveRDS(confusionelasticnet, file = paste0(urlclusteretvarexpli,"/confusionElasticnet",k,scale,".RDS"))
 
-    confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))
+    confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))[,paste0(1:k)]
     biensclasses[7+scale,k-1]<-round(100*sum(diag(as.matrix(confusionRF)))/sum(confusionRF),digits=1)
     saveRDS(confusionRF, file = paste0(urlclusteretvarexpli,"/confusionRandomForest",k,scale,".RDS"))
 
-    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))
+    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))[,paste0(1:k)]
     biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
     saveRDS(confusionSVMrad, file = paste0(urlclusteretvarexpli,"/confusionSVMRadial",k,scale,".RDS"))
 
-    confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))
+    confusionSVMlin<-as.data.frame.matrix(table(Y,YprevSVM_lin))[,paste0(1:k)]
     biensclasses[11+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMlin)))/sum(confusionSVMlin),digits=1)
     saveRDS(confusionSVMlin, file = paste0(urlclusteretvarexpli,"/confusionSVMLinear",k,scale,".RDS"))
   }

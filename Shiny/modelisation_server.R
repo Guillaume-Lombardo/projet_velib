@@ -136,7 +136,8 @@ output$CImpvarPlot <- renderAmCharts({
       amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="somme des valeurs absolues des beta")
+                ylab="somme des valeurs absolues des beta", 
+                precision=2)
     }
     else if(input$Cselecmod == "RandomForest"){
       
@@ -146,7 +147,8 @@ output$CImpvarPlot <- renderAmCharts({
       amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="Importance")     
+                ylab="Importance", 
+                precision=2)     
       
     }
     else {
@@ -305,7 +307,8 @@ output$CCoeffPlot <- renderAmCharts({
       amBarplot(x="X2", y="1", data=out22[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="somme des valeaurs absolues des beta")
+                ylab="somme des valeaurs absolues des beta", 
+                precision=2)
     }
     else if(input$Cselecmod == "RandomForest"){
       
@@ -315,7 +318,8 @@ output$CCoeffPlot <- renderAmCharts({
       amBarplot(x="names", y="importance", data=out[1:nvar,], export = T, 
                 main= "Importance des variables", 
                 xlab = "Variables explicatives", 
-                ylab="Importance des variablesr")     
+                ylab="Importance des variablesr", 
+                precision=2)     
       
     }
     else {
