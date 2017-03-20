@@ -4,6 +4,8 @@ fluidRow(
   column(width = 2, 
          wellPanel(
            
+           
+           
            #selection du nombre de classes
            selectInput(inputId = 'Anb_cluster', label = 'Nombre de classes', selected = 6,
                        choices = 2:10), 
