@@ -1,20 +1,43 @@
 tracer_profil_membres <- function(representation, station, nb_classes=2, classe=1, nb_membre=5){
-  # couleur <- brewer.pal(10, 'Paired')
   liste_serie_temp <- sample(which(representation[[nb_classes]]$cluster==classe),nb_membre)
   liste_stations_classe <- paste('X',
                                  representation[[nb_classes]]$number[liste_serie_temp],
                                  sep = '')
-  liste_profil_classe <- paste('P',classe,sep = '')
+  liste_profil_classe <- paste0('P',classe)
+  liste_profil_classe_25 <- paste0('P',classe,'_p25')
+  liste_profil_classe_75 <- paste0('P',classe,'_p75')
+
+  eval(parse(text = paste0("print(head(p75_colonnes_",nb_classes,
+                           "[,c('time',liste_profil_classe_75)]))")))
   
-  eval(parse(text = paste("data_series <- merge(x = profil_colonnes_",nb_classes,
-                          "[,c('time',liste_profil_classe)],",
-                          "y = station[,c('time',liste_stations_classe)],",
-                          "by.x = 'time',by.y = 'time')",
-                          sep = '')))
+  eval(parse(text = paste0("data_series <- merge(x = profil_colonnes_",nb_classes,
+                           "[,c('time',liste_profil_classe)],",
+                           "y = p25_colonnes_",nb_classes,
+                           "[,c('time',liste_profil_classe_25)],",
+                           "by.x = 'time',by.y = 'time')")))
+
+  eval(parse(text = paste0("data_series <- merge(x = data_series,",
+                           "y = p75_colonnes_",nb_classes,
+                           "[,c('time',liste_profil_classe_75)],",
+                           "by.x = 'time',by.y = 'time')")))
+
+  eval(parse(text = paste0("data_series <- merge(x = data_series,",
+                           "y = station[,c('time',liste_stations_classe)],",
+                           "by.x = 'time',by.y = 'time')")))
+
+  # lw <- ifelse((substr(names(data_series)[names(data_series)!='time'],1,1)=='P') & 
+  #                substr(names(data_series)[names(data_series)!='time'],1,3) not %in% c('P25','P75')),3,1)
   
-  amTimeSeries(data_series, 'time', names(data_series)[which(names(data_series)!='time')], 
+  
+  liste_P <-list(c(liste_profil_classe_25,liste_profil_classe,liste_profil_classe_75))
+  liste_nom_series <- c(liste_P, as.list(names(data_series)[which(names(data_series)!='time' & substr(names(data_series),1,1)!='P')]))
+  
+  lw <- sapply(liste_nom_series,length)
+  
+  amTimeSeries(data_series, 'time', liste_nom_series, 
                linetype = 0, export = T,
-               main = paste('description de la classe ',classe, ' par ',nb_membre,' groupes'))
+               main = paste('description de la classe ',classe, ' par ',nb_membre,' groupes'),
+               linewidth = lw)
 }
 
 output$Amod1 <- renderText({

@@ -1,6 +1,5 @@
 library(shiny)
 library(rAmCharts)
-
 library(jsonlite)
 library(curl)
 library(cluster)
@@ -85,9 +84,29 @@ afficher_carte <- function(data, stations, polygones, var_polygone, var_point=NU
 
 
 representation_kmeans <- readRDS(file = '../Sortie/representation_kmeans.RDS')
+representation_kmeans2 <- readRDS(file = '../Sortie/representation_kmeans2.RDS')
+
+cluster <- readRDS(file = '../Sortie/cluster.RDS')
+cluster2 <- readRDS(file = '../Sortie/cluster2.RDS')
+
 stations_colonnes <- readRDS(file = '../Sortie/stations_colonnes.RDS')
+
 eval(parse(text = paste("profil_colonnes_",1:10," <- readRDS(",
                         "file = '../Sortie/profil_colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p25_colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/p25_colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p75_colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/p75_colonnes_",1:10,".RDS')", sep = '')))
+
+
+eval(parse(text = paste("profil_2colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/profil_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p25_2colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/p25_2colonnes_",1:10,".RDS')", sep = '')))
+eval(parse(text = paste("p75_2colonnes_",1:10," <- readRDS(",
+                        "file = '../Sortie/p75_2colonnes_",1:10,".RDS')", sep = '')))
+
+
 
 liste_variables_exp <- read.csv("../Sortie/liste_variables_exp.csv",sep=';')
 voronoi500 <- readRDS("./voronoi500.rds")
