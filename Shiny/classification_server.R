@@ -81,30 +81,40 @@ output$Aui_select_classe_detail <- renderUI({
 output$Adetail_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
-    tracer_profil_membres(representation = representation_kmeans,
-                          station = stations_colonnes,
-                          nb_classes = as.numeric(input$Anb_cluster),
-                          classe = min(as.numeric(input$Aclasse_detail),as.numeric(input$Anb_cluster)),
-                          nb_membre = as.numeric(input$Anb_courbe))
+    if (input$AclusterACP){
+      tracer_profil_membres(representation = representation_kmeans2,
+                            station = stations_colonnes,
+                            nb_classes = as.numeric(input$Anb_cluster),
+                            classe = min(as.numeric(input$Aclasse_detail),as.numeric(input$Anb_cluster)),
+                            nb_membre = as.numeric(input$Anb_courbe))
+    } else {
+      tracer_profil_membres(representation = representation_kmeans,
+                            station = stations_colonnes,
+                            nb_classes = as.numeric(input$Anb_cluster),
+                            classe = min(as.numeric(input$Aclasse_detail),as.numeric(input$Anb_cluster)),
+                            nb_membre = as.numeric(input$Anb_courbe))
+    }
   })
 })
 
 output$A_map2 <- renderLeaflet({
-  if (input$AclusterACP){
-    data_carte <- representation_kmeans2[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
-  } else {
-    data_carte <- representation_kmeans[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
-  }
-  
-  data_carte$couleur_poly <- data_carte$cluster #brewer.pal(10, 'Paired')[data_carte$cluster]
-  voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
-  																									 function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
-  afficher_carte(data=data_carte,
-                 polygones=voronoi_custom,
-                 stations=read.csv(file="../Sortie/stations1199.csv"),
-                 var_polygone='couleur_poly',
-                 lbl_var_polygone='cluster')
-
+  input$AmiseAjour
+  isolate({
+    if (input$AclusterACP){
+      data_carte <- representation_kmeans2[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+    } else {
+      data_carte <- representation_kmeans[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+    }
+    
+    data_carte$couleur_poly <- data_carte$cluster #brewer.pal(10, 'Paired')[data_carte$cluster]
+    voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
+                                              function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
+    afficher_carte(data=data_carte,
+                   polygones=voronoi_custom,
+                   stations=read.csv(file="../Sortie/stations1199.csv"),
+                   var_polygone='couleur_poly',
+                   lbl_var_polygone='cluster') 
+    })
 })
 
 
