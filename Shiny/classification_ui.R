@@ -26,12 +26,21 @@ fluidRow(
          )
   ),
   # deuxieme colonne avec les sortiesw
-  column(width = 8, 
+  column(width = 10, 
          # textOutput("Amod1"),
-         amChartsOutput('Aprofil_classe'),
-         amChartsOutput('Adetail_classe'),
+         fluidRow(
+           column(width = 9,
+                  amChartsOutput('Aprofil_classe'),
+                  br(),
+                  amChartsOutput('Adetail_classe')),
+           column(width = 1,
+                  tags$h4("Taille des clusters"),
+                  tableOutput('Atable_taille'))
+         ),
+         fluidRow(
          leafletOutput('A_map2', height=600),
          br(), br()
+         )
   )
 )
 

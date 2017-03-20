@@ -90,6 +90,9 @@ representation_kmeans2 <- readRDS(file = '../Sortie/representation_kmeans2.RDS')
 cluster <- readRDS(file = '../Sortie/cluster.RDS')
 cluster2 <- readRDS(file = '../Sortie/cluster2.RDS')
 
+print(str(cluster))
+print(str(cluster2))
+
 stations_colonnes <- readRDS(file = '../Sortie/stations_colonnes.RDS')
 
 eval(parse(text = paste("profil_colonnes_",1:10," <- readRDS(",
@@ -106,7 +109,6 @@ eval(parse(text = paste("p25_2colonnes_",1:10," <- readRDS(",
                         "file = '../Sortie/p25_2colonnes_",1:10,".RDS')", sep = '')))
 eval(parse(text = paste("p75_2colonnes_",1:10," <- readRDS(",
                         "file = '../Sortie/p75_2colonnes_",1:10,".RDS')", sep = '')))
-
 
 
 liste_variables_exp <- read.csv("../Sortie/liste_variables_exp.csv",sep=';')

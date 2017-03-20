@@ -117,20 +117,23 @@ output$A_map2 <- renderLeaflet({
     })
 })
 
-
-# library(rAmCharts)
-# test <- stations_colonnes[,c('X903', 'X905','time')]
-# amTimeSeries(test, 'time', c('X903', 'X905'))  
-# 
-# data('data_stock_2')
-# amTimeSeries(data_stock_2, 'date', c('ts1', 'ts2'))
-
-# output$Cafficheimportance <- renderUI({
-#   input$Cgo
-#   isolate({
-#     if (input$Cselecmod == "Lasso") {
-#       amChartsOutput("CImpvarPlot")
-#     }
-#     #fin isolate
-#   })
-# })
+output$Atable_taille <- renderTable({
+  input$AmiseAjour
+  isolate({
+    print(str(cluster[[input$Anb_cluster]]))
+    if (input$AclusterACP){
+      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster2[[input$Anb_cluster]]$size)
+    } else {
+      res <- data.frame(cluster = 1:input$Anb_cluster, Taille = cluster[[input$Anb_cluster]]$size)
+    }
+    
+    
+    print(res)
+    res
+    
+  }) 
+  
+},
+rownames=T,
+colnames=T
+)
