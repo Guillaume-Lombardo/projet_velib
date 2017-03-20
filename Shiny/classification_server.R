@@ -6,21 +6,29 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
   liste_profil_classe <- paste0('P',classe)
   liste_profil_classe_25 <- paste0('P',classe,'_p25')
   liste_profil_classe_75 <- paste0('P',classe,'_p75')
-
-  eval(parse(text = paste0("print(head(p75_colonnes_",nb_classes,
-                           "[,c('time',liste_profil_classe_75)]))")))
   
-  eval(parse(text = paste0("data_series <- merge(x = profil_colonnes_",nb_classes,
-                           "[,c('time',liste_profil_classe)],",
-                           "y = p25_colonnes_",nb_classes,
-                           "[,c('time',liste_profil_classe_25)],",
-                           "by.x = 'time',by.y = 'time')")))
-
-  eval(parse(text = paste0("data_series <- merge(x = data_series,",
-                           "y = p75_colonnes_",nb_classes,
-                           "[,c('time',liste_profil_classe_75)],",
-                           "by.x = 'time',by.y = 'time')")))
-
+  if (input$AclusterACP){
+    eval(parse(text = paste0("data_series <- merge(x = profil_2colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe)],",
+                             "y = p25_2colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe_25)],",
+                             "by.x = 'time',by.y = 'time')")))
+    eval(parse(text = paste0("data_series <- merge(x = data_series,",
+                             "y = p75_2colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe_75)],",
+                             "by.x = 'time',by.y = 'time')")))
+  } else {
+    eval(parse(text = paste0("data_series <- merge(x = profil_colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe)],",
+                             "y = p25_colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe_25)],",
+                             "by.x = 'time',by.y = 'time')")))
+    eval(parse(text = paste0("data_series <- merge(x = data_series,",
+                             "y = p75_colonnes_",nb_classes,
+                             "[,c('time',liste_profil_classe_75)],",
+                             "by.x = 'time',by.y = 'time')")))
+  }
+  
   eval(parse(text = paste0("data_series <- merge(x = data_series,",
                            "y = station[,c('time',liste_stations_classe)],",
                            "by.x = 'time',by.y = 'time')")))
@@ -40,18 +48,25 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
                linewidth = lw)
 }
 
-output$Amod1 <- renderText({
-  paste("carte ; {profil de classe ; 1 classe + quelques series} ; variances")
-  # print(head(profil_colonnes_6))
-})
+# output$Amod1 <- renderText({
+#   paste("carte ; {profil de classe ; 1 classe + quelques series} ; variances")
+#   # print(head(profil_colonnes_6))
+# })
 
 output$Aprofil_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
-    eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
-                            "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
-                            " linetype =0, export = T,",
-                            "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
+    if (input$AclusterACP){
+      eval(parse(text = paste("graphe <- amTimeSeries(profil_2colonnes_",input$Anb_cluster,", 'time', ",
+                              "names(profil_2colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
+                              " linetype =0, export = T,",
+                              "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
+    } else {
+      eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
+                              "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
+                              " linetype =0, export = T,",
+                              "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
+    }
   })
 })
 
@@ -75,7 +90,12 @@ output$Adetail_classe <- renderAmCharts({
 })
 
 output$A_map2 <- renderLeaflet({
-  data_carte <- representation_kmeans[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+  if (input$AclusterACP){
+    data_carte <- representation_kmeans2[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+  } else {
+    data_carte <- representation_kmeans[[as.numeric(input$Anb_cluster)]][,c('number','cluster')]
+  }
+  
   data_carte$couleur_poly <- data_carte$cluster #brewer.pal(10, 'Paired')[data_carte$cluster]
   voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
   																									 function(.x) voronoi500@polygons[[.x]]@ID) %in% data_carte$number)]
