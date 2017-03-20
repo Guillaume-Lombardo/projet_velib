@@ -270,13 +270,13 @@ output$C_map <- renderLeaflet({
     colnames(Yprev)[1]<-"Yprev"
     Y<-cbind.data.frame(Y, Yprev)
     #on ne retient que les stations mal prévues
-    Y<-Y[Y$cluster!=Y$Yprev,]
+    Y$cluster[Y$cluster==Y$Yprev] <- NA
     
     
-    voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
-                                              function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
+    # voronoi_custom <- voronoi500[which(sapply(1:length(voronoi500), 
+    #                                           function(.x) voronoi500@polygons[[.x]]@ID) %in% Y$number)]
     afficher_carte(data=Y,
-                   polygones=voronoi_custom,
+                   polygones=voronoi500,
                    stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone="cluster",
                    var_point="Yprev",
