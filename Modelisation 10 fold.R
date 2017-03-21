@@ -53,9 +53,9 @@ set.seed(4242)
 ECHANTILLON <- sample(rep(c(1:10),round(1199)/10+1))[1:1199]
 
 
-for (k in 6:6)
+for (k in 2:10)
 {
-  for (scale in 1:1)
+  for (scale in 0:1)
   {
     Yprevlasso<-c()
     Yprevridge<-c()
