@@ -41,11 +41,13 @@ tracer_profil_membres <- function(representation, station, nb_classes=2, classe=
   liste_nom_series <- c(liste_P, as.list(names(data_series)[which(names(data_series)!='time' & substr(names(data_series),1,1)!='P')]))
   
   lw <- sapply(liste_nom_series,length)
+  liste_couleur <- c(sapply(1:nb_classes,leaflet::colorNumeric('viridis',1:nb_classes,reverse=T, na.color = '#FFFFFF'))[classe],
+  									 brewer.pal(9,'Set1')[1:(length(lw)-1)])
   
   amTimeSeries(data_series, 'time', liste_nom_series, 
                linetype = 0, export = T,
                main = paste('description de la classe ',classe, ' par ',nb_membre,' groupes'),
-               linewidth = lw)
+               linewidth = lw, color = liste_couleur)
 }
 
 # output$Amod1 <- renderText({
@@ -57,15 +59,17 @@ output$Aprofil_classe <- renderAmCharts({
   input$AmiseAjour
   isolate({
     if (input$AclusterACP){
-      eval(parse(text = paste("graphe <- amTimeSeries(profil_2colonnes_",input$Anb_cluster,", 'time', ",
+      eval(parse(text = paste0("graphe <- amTimeSeries(profil_2colonnes_",input$Anb_cluster,", 'time', ",
                               "names(profil_2colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
                               " linetype =0, export = T,",
-                              "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
+                              "main = paste('profil à ',",input$Anb_cluster,",' classes'))")))
     } else {
-      eval(parse(text = paste("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
+      eval(parse(text = paste0("graphe <- amTimeSeries(profil_colonnes_",input$Anb_cluster,", 'time', ",
                               "names(profil_colonnes_",input$Anb_cluster,")[1:",input$Anb_cluster,"],",
                               " linetype =0, export = T,",
-                              "main = paste('profil à ',",input$Anb_cluster,",' classes'))",sep = '')))
+                              "main = paste('profil à ',",input$Anb_cluster,",' classes'),",
+      												"color = sapply(1:",input$Anb_cluster,
+      												",leaflet::colorNumeric('viridis',1:",input$Anb_cluster,",reverse=T, na.color = '#FFFFFF')))")))
     }
   })
 })

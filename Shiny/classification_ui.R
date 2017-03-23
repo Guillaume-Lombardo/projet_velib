@@ -8,7 +8,7 @@ fluidRow(
            # Faire une ACP sur les profils temporel avant clustering ou pas !
            checkboxInput(inputId = "AclusterACP", label = "ACP sur les prfils temporels", value=F),
            # selection du nombre de classes
-           selectInput(inputId = 'Anb_cluster', label = 'Nombre de classes', selected = 6,
+           selectInput(inputId = 'Anb_cluster', label = 'Nombre de classes', selected = 3,
                        choices = 2:10), 
            
            # selection du modèle
@@ -20,27 +20,28 @@ fluidRow(
            ),
            selectInput(inputId = 'Aclasse_detail', label = 'classe pour laquelle on veut des details',
                        selected = 1,
-                       choices = 1:10),
+                       choices = 1:9),
            # uiOutput('Aui_select_classe_detail'),
            actionButton('AmiseAjour','activation !')
-         ),
-         plotOutput('Agraphe_variance')
+         )
+  # 			 ,
+  #        plotOutput('Agraphe_variance')
   ),
   # deuxieme colonne avec les sortiesw
   column(width = 10, 
          # textOutput("Amod1"),
+  			 fluidRow(
+  			 	leafletOutput('A_map2', height=600)
+  			 ),
          fluidRow(
-           column(width = 9,
+           column(width = 10,
                   amChartsOutput('Aprofil_classe'),
                   br(),
                   amChartsOutput('Adetail_classe')),
-           column(width = 1,
+           column(width = 2,
                   tags$h4("Taille des clusters"),
-                  tableOutput('Atable_taille'))
-         ),
-         fluidRow(
-         leafletOutput('A_map2', height=600),
-         br(), br()
+                  tableOutput('Atable_taille')),
+           br()
          )
   )
 )
