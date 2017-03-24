@@ -6,7 +6,7 @@ library(randomForest)
 
 
 ACPcluster<-0
-varexpliACP<-0
+varexpliACP<-1
 
 if (ACPcluster==0){
   if (varexpliACP == 0) {
@@ -154,23 +154,53 @@ for (k in 2:10)
 
       
     }
-    confusionlasso<-as.data.frame.matrix(table(Y,Yprevlasso))[,paste0(1:k)]
+    confusionlasso0<-as.data.frame.matrix(table(Y,Yprevlasso))
+    temp2<-which(!(rownames(confusionlasso0) %in% colnames(confusionlasso0)))
+    for (i in temp2) {
+      confusionlasso0$new<-0
+      colnames(confusionlasso0)[ncol(confusionlasso0)]<-i
+    }
+    confusionlasso<-confusionlasso0[,paste0(1:k)]
     biensclasses[1+scale,k-1]<-round(100*sum(diag(as.matrix(confusionlasso)))/sum(confusionlasso),digits=1)
     saveRDS(confusionlasso, file = paste0(urlclusteretvarexpli,"/confusionLasso",k,scale,".RDS"))
 
-    confusionridge<-as.data.frame.matrix(table(Y,Yprevridge))[,paste0(1:k)]
+    confusionridge0<-as.data.frame.matrix(table(Y,Yprevridge))
+    temp2<-which(!(rownames(confusionridge0) %in% colnames(confusionridge0)))
+    for (i in temp2) {
+      confusionridge0$new<-0
+      colnames(confusionridge0)[ncol(confusionridge0)]<-i
+    }
+    confusionridge<-confusionridge0[,paste0(1:k)]
     biensclasses[3+scale, k-1]<-round(100*sum(diag(as.matrix(confusionridge)))/sum(confusionridge),digits=1)
     saveRDS(confusionridge, file = paste0(urlclusteretvarexpli,"/confusionRidge",k,scale,".RDS"))
 
-    confusionelasticnet<-as.data.frame.matrix(table(Y,Yprevelasticnet))[,paste0(1:k)]
+    confusionelasticnet0<-as.data.frame.matrix(table(Y,Yprevelasticnet))
+    temp2<-which(!(rownames(confusionelasticnet0) %in% colnames(confusionelasticnet0)))
+    for (i in temp2) {
+      confusionelasticnet0$new<-0
+      colnames(confusionelasticnet0)[ncol(confusionelasticnet0)]<-i
+    }
+    confusionelasticnet<-confusionelasticnet0[,paste0(1:k)]
     biensclasses[5+scale,k-1]<-round(100*sum(diag(as.matrix(confusionelasticnet)))/sum(confusionelasticnet),digits=1)
     saveRDS(confusionelasticnet, file = paste0(urlclusteretvarexpli,"/confusionElasticnet",k,scale,".RDS"))
 
-    confusionRF<-as.data.frame.matrix(table(Y,Yprevrandomforest))[,paste0(1:k)]
+    confusionRF0<-as.data.frame.matrix(table(Y,Yprevrandomforest))
+    temp2<-which(!(rownames(confusionRF0) %in% colnames(confusionRF0)))
+    for (i in temp2) {
+      confusionRF0$new<-0
+      colnames(confusionRF0)[ncol(confusionRF0)]<-i
+    }
+    confusionRF<-confusionRF0[,paste0(1:k)]
     biensclasses[7+scale,k-1]<-round(100*sum(diag(as.matrix(confusionRF)))/sum(confusionRF),digits=1)
     saveRDS(confusionRF, file = paste0(urlclusteretvarexpli,"/confusionRandomForest",k,scale,".RDS"))
 
-    confusionSVMrad<-as.data.frame.matrix(table(Y,YprevSVM_rad))[,paste0(1:k)]
+    confusionSVMrad0<-as.data.frame.matrix(table(Y,YprevSVM_rad))
+    temp2<-which(!(rownames(confusionSVMrad0) %in% colnames(confusionSVMrad0)))
+    for (i in temp2) {
+      confusionSVMrad0$new<-0
+      colnames(confusionSVMrad0)[ncol(confusionSVMrad0)]<-i
+    }
+    confusionSVMrad<-confusionSVMrad0[,paste0(1:k)]
     biensclasses[9+scale,k-1]<-round(100*sum(diag(as.matrix(confusionSVMrad)))/sum(confusionSVMrad),digits=1)
     saveRDS(confusionSVMrad, file = paste0(urlclusteretvarexpli,"/confusionSVMRadial",k,scale,".RDS"))
 
