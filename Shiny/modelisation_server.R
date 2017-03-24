@@ -258,7 +258,11 @@ output$C_map <- renderLeaflet({
   input$Cgo
   isolate({
     #récupération des clusters initiaux
-    url<-paste0("../Sortie/clustering_",input$Ckmeans,"_classes_mod7j.csv")
+    if (input$CACPcluster==0){
+      url<-paste0("Sortie/clustering_",input$Ckmeans,"_classes_mod7j.csv") 
+    } else {
+      url<-paste0("Sortie/clustering_ACP_",input$Ckmeans,"_classes_mod7j.csv") 
+    }
     Y<-read.csv(url, sep=";") 
     #récupération du modèle
     modele<-Cmodele()
