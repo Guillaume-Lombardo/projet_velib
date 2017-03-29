@@ -117,6 +117,7 @@ output$A_map2 <- renderLeaflet({
                    polygones=voronoi_custom,
                    stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone='couleur_poly',
+                   quali_polygone=T,
                    lbl_var_polygone='cluster') 
   })
 })

@@ -13,14 +13,14 @@ output$event <- renderPrint({
 observe({
   d <- event_data("plotly_click")
   if (!is.null(d)) {
-    updateSelectInput(session, "B_var1_test", selected = listvar[d$x])
-    updateSelectInput(session, "B_var2_test", selected = listvar[d$y])
+    updateSelectInput(session, "B_var1_test", selected = liste_variables_exp[liste_variables_exp$Variable==listvar[d$x],3])
+    updateSelectInput(session, "B_var2_test", selected = liste_variables_exp[liste_variables_exp$Variable==listvar[1+length(listvar)-d$y],3])
   }
 })
 
 output$B_boxplot1 <- renderAmCharts({
   B_var1_char <- as.character(input$B_var1_test)
-  var_popppp1 <- B_var1_char
+  var_popppp1 <- liste_variables_exp[liste_variables_exp$lbl2==B_var1_char,1]
   eval(parse(text = paste('amBoxplot(',
                           var_popppp1,
                           '~cluster_',
@@ -37,7 +37,7 @@ output$B_boxplot1 <- renderAmCharts({
 
 output$B_boxplot2 <- renderAmCharts({
   B_var2_char <- as.character(input$B_var2_test)
-  var_popppp2 <- B_var2_char
+  var_popppp2 <- liste_variables_exp[liste_variables_exp$lbl2==B_var2_char,1]
   eval(parse(text = paste('amBoxplot(',
                           var_popppp2,
                           '~cluster_',
@@ -55,9 +55,9 @@ output$B_boxplot2 <- renderAmCharts({
 
 output$B_gr1 <- renderPlotly({
   B_var1_char <- as.character(input$B_var1_test)
-  var_popppp1 <- B_var1_char
+  var_popppp1 <- liste_variables_exp[liste_variables_exp$lbl2==B_var1_char,1]
   B_var2_char <- as.character(input$B_var2_test)
-  var_popppp2 <- B_var2_char
+  var_popppp2 <- liste_variables_exp[liste_variables_exp$lbl2==B_var2_char,1]
   eval(parse(text = paste('plot_ly(shared_,x = ~',
                           var_popppp1,
                           ',y = ~',
@@ -72,7 +72,7 @@ output$B_gr1 <- renderPlotly({
 
 output$B_map1 <- renderLeaflet({
   B_var1_char <- as.character(input$B_var1_test)
-  var_popppp <- B_var1_char
+  var_popppp <- liste_variables_exp[liste_variables_exp$lbl2==B_var1_char,1]
   #var_popppp <- liste_variables_exp[liste_variables_exp$lbl==B_var2_char,1]
   
   eval(parse(text = paste('palll1 <- leaflet::colorNumeric("viridis",domain=zzz$',var_popppp,',reverse=T)',sep = '')))
@@ -95,7 +95,7 @@ output$B_map1 <- renderLeaflet({
 
 output$B_map2 <- renderLeaflet({
   B_var2_char <- as.character(input$B_var2_test)
-  var_popppp <- B_var2_char
+  var_popppp <- liste_variables_exp[liste_variables_exp$lbl2==B_var2_char,1]
   eval(parse(text = paste('palll1 <- leaflet::colorNumeric("viridis",domain=zzz$',var_popppp,',reverse=T)',sep = '')))
   parse1 <- 'leaflet(shared_) %>%'
   parse2 <- 'addProviderTiles(providers$Esri.WorldTopoMap) %>%'

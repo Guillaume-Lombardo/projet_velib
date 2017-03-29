@@ -284,6 +284,8 @@ output$C_map <- renderLeaflet({
                    stations=read.csv(file="../Sortie/stations1199.csv"),
                    var_polygone="cluster",
                    var_point="Yprev",
+                   quali_polygone=T,
+                   quali_point=T,
                    lbl_var_polygone="cluster initial",
                    lbl_var_point="cluster prévu")
   })
